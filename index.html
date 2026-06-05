@@ -179,6 +179,41 @@
   .empty-list {
     padding: 18px 16px; font-size: 12px; color: #9ca3af; text-align: center;
   }
+  .sidebar.hidden {
+    display: none;
+  }
+
+  .region-sidebar {
+    position: absolute; top: 72px; left: 12px;
+    width: 220px; max-height: calc(100vh - 96px);
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    z-index: 820; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .region-sidebar.hidden {
+    display: none;
+  }
+  .region-sidebar-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .region-sidebar-title { font-size: 13px; font-weight: 600; color: #374151; }
+  .panel-toggle {
+    position: absolute; top: 72px;
+    height: 34px; padding: 0 10px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #e5e7eb; border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    color: #374151; font-family: inherit; font-size: 12px; font-weight: 600;
+    cursor: pointer; z-index: 790;
+  }
+  .panel-toggle:hover { background: #f9fafb; }
+  #region-panel-toggle { left: 12px; }
+  #school-panel-toggle { right: 12px; }
 
   /* ============ 学校详情面板 ============ */
   .detail-panel {
@@ -425,6 +460,7 @@
   /* ============ 响应式 ============ */
   @media (max-width: 768px) {
     .sidebar { width: calc(100vw - 24px); max-width: 240px; }
+    .region-sidebar { width: calc(100vw - 24px); max-width: 240px; }
     .detail-panel {
       width: calc(100vw - 24px); left: 12px; right: 12px;
       max-height: 50vh;
@@ -469,7 +505,18 @@
     </div>
   </div>
 
-  <aside class="sidebar">
+  <button id="region-panel-toggle" class="panel-toggle" type="button">区域</button>
+  <button id="school-panel-toggle" class="panel-toggle" type="button">学校</button>
+
+  <aside id="region-sidebar" class="region-sidebar">
+    <div class="region-sidebar-header">
+      <span class="region-sidebar-title">区域</span>
+      <span id="region-sidebar-count" class="sidebar-count"></span>
+    </div>
+    <div id="region-sidebar-list" class="region-list"></div>
+  </aside>
+
+  <aside id="school-sidebar" class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title-row">
         <span class="sidebar-title">学校列表</span>
@@ -1207,6 +1254,26 @@ function renderSchoolList() {
   });
 }
 
+function hideSchoolSidebar() {
+  const sidebar = document.getElementById('school-sidebar');
+  if (sidebar) sidebar.classList.add('hidden');
+}
+
+function showSchoolSidebar() {
+  const sidebar = document.getElementById('school-sidebar');
+  if (sidebar) sidebar.classList.remove('hidden');
+}
+
+function hideRegionSidebar() {
+  const sidebar = document.getElementById('region-sidebar');
+  if (sidebar) sidebar.classList.add('hidden');
+}
+
+function showRegionSidebar() {
+  const sidebar = document.getElementById('region-sidebar');
+  if (sidebar) sidebar.classList.remove('hidden');
+}
+
 // ---------- 片区绑定辅助函数 ----------
 function getSchoolGroups(schoolName, regionId) {
   const region = REGIONS[regionId];
@@ -1228,6 +1295,7 @@ function getLinkedSchools(schoolName, regionId) {
 
 // ---------- 选中某所学校 ----------
 function selectSchool(name, flyTo = false) {
+  hideSchoolSidebar();
   // 取消上一个选中的区域高亮
   if (STATE.selectedSchool && STATE.zonePolygons.has(STATE.selectedSchool)) {
     STATE.zonePolygons.get(STATE.selectedSchool).setStyle({ fillOpacity: 0.07, opacity: 0.30, weight: 1 });
@@ -1362,14 +1430,21 @@ function switchRegion(id) {
     fitMapToRegion(region, true);
   }
   renderSchoolList();
+  renderRegionList('region-sidebar-list');
+  renderRegionList('region-list');
+  hideSchoolSidebar();
+  hideRegionSidebar();
 
   if (location.hash !== '#' + id) {
     history.replaceState(null, '', '#' + id);
   }
 }
 
-function renderRegionList() {
-  const list = document.getElementById('region-list');
+function renderRegionList(targetId = 'region-list') {
+  const list = document.getElementById(targetId);
+  if (!list) return;
+  const count = document.getElementById('region-sidebar-count');
+  if (count) count.textContent = `${Object.keys(REGIONS).length} 个`;
   list.innerHTML = Object.entries(REGIONS).map(([id, r]) => `
     <div class="region-item ${id === STATE.regionId ? 'active' : ''}" data-id="${id}">
       <span>${escapeHtml(r.name)}</span>
@@ -1379,7 +1454,8 @@ function renderRegionList() {
   list.querySelectorAll('.region-item').forEach(el => {
     el.addEventListener('click', () => {
       switchRegion(el.dataset.id);
-      document.getElementById('region-modal').classList.add('hidden');
+      const modal = document.getElementById('region-modal');
+      if (modal) modal.classList.add('hidden');
     });
   });
 }
@@ -1405,6 +1481,8 @@ function init() {
   const hash = location.hash.replace('#', '');
   if (REGIONS[hash]) STATE.regionId = hash;
   document.getElementById('region-name').textContent = REGIONS[STATE.regionId].name;
+  renderSchoolList();
+  renderRegionList('region-sidebar-list');
 
   // 先渲染列表（不依赖地图库）
   renderSchoolList();
@@ -1423,9 +1501,14 @@ function init() {
 
   // 顶部按钮
   document.getElementById('region-btn').addEventListener('click', () => {
-    renderRegionList();
-    document.getElementById('region-modal').classList.remove('hidden');
+    renderRegionList('region-sidebar-list');
+    showRegionSidebar();
   });
+  document.getElementById('region-panel-toggle').addEventListener('click', () => {
+    renderRegionList('region-sidebar-list');
+    showRegionSidebar();
+  });
+  document.getElementById('school-panel-toggle').addEventListener('click', showSchoolSidebar);
   document.getElementById('region-modal-close').addEventListener('click', () => {
     document.getElementById('region-modal').classList.add('hidden');
   });
