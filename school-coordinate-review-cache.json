@@ -1,0 +1,1705 @@
+{
+  "锦江区:primary:成都市锦江区驸马小学": {
+    "school": "成都市锦江区驸马小学",
+    "district": "锦江区",
+    "type": "primary",
+    "old": [
+      104.162,
+      30.607
+    ],
+    "status": "review",
+    "best": {
+      "title": "成都市锦江区驸马幼儿园",
+      "address": "四川省成都市锦江区紫檀街132号",
+      "category": "教育学校:幼儿园",
+      "ad_info": {
+        "adcode": 510104,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "锦江区"
+      },
+      "location": {
+        "lat": 30.582923,
+        "lng": 104.147517
+      },
+      "score": 55,
+      "distanceKm": 3.01
+    },
+    "candidates": [
+      {
+        "title": "成都市锦江区驸马幼儿园",
+        "address": "四川省成都市锦江区紫檀街132号",
+        "category": "教育学校:幼儿园",
+        "ad_info": {
+          "adcode": 510104,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "锦江区"
+        },
+        "location": {
+          "lat": 30.582923,
+          "lng": 104.147517
+        },
+        "score": 55,
+        "distanceKm": 3.01
+      },
+      {
+        "title": "锦江上院-24号楼",
+        "address": "四川省成都市锦江区三圣街道黉柏路锦江区驸马小学西北侧约90米",
+        "category": "房产小区:房产小区附属",
+        "ad_info": {
+          "adcode": 510104,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "锦江区"
+        },
+        "location": {
+          "lat": 30.579928,
+          "lng": 104.14772
+        },
+        "score": 40,
+        "distanceKm": 3.3
+      },
+      {
+        "title": "三圣食药监所",
+        "address": "四川省成都市锦江区三圣街道黉柏路220号驸3号",
+        "category": "机构团体:政府机关",
+        "ad_info": {
+          "adcode": 510104,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "锦江区"
+        },
+        "location": {
+          "lat": 30.58056,
+          "lng": 104.14861
+        },
+        "score": 18,
+        "distanceKm": 3.202
+      },
+      {
+        "title": "微亭小院",
+        "address": "四川省成都市锦江区三圣街道驸马联合二组167号",
+        "category": "教育学校:幼儿园",
+        "ad_info": {
+          "adcode": 510104,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "锦江区"
+        },
+        "location": {
+          "lat": 30.579023,
+          "lng": 104.138986
+        },
+        "score": 1,
+        "distanceKm": 3.805
+      },
+      {
+        "title": "成都永和信财税咨询有限公司",
+        "address": "四川省成都市锦江区椰树街284号6楼609号",
+        "category": "银行金融:财务公司",
+        "ad_info": {
+          "adcode": 510104,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "锦江区"
+        },
+        "location": {
+          "lat": 30.582063,
+          "lng": 104.151381
+        },
+        "score": -3,
+        "distanceKm": 2.948
+      },
+      {
+        "title": "乐一花园幼育中心",
+        "address": "四川省成都市锦江区三圣街道滨湖路驸马村二组152号",
+        "category": "教育学校:培训:幼儿教育",
+        "ad_info": {
+          "adcode": 510104,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "锦江区"
+        },
+        "location": {
+          "lat": 30.580379,
+          "lng": 104.1378
+        },
+        "score": -12,
+        "distanceKm": 3.752
+      }
+    ]
+  },
+  "青羊区:middle:成都市树德实验中学（东马棚）": {
+    "school": "成都市树德实验中学（东马棚）",
+    "district": "青羊区",
+    "type": "middle",
+    "old": [
+      104.06,
+      30.674
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都市树德实验中学",
+      "address": "四川省成都市青羊区少城街道东马棚街9号",
+      "category": "教育学校:中学",
+      "ad_info": {
+        "adcode": 510105,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "青羊区"
+      },
+      "location": {
+        "lat": 30.668905,
+        "lng": 104.057977
+      },
+      "score": 121,
+      "distanceKm": 0.598
+    },
+    "candidates": [
+      {
+        "title": "成都市树德实验中学",
+        "address": "四川省成都市青羊区少城街道东马棚街9号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.668905,
+          "lng": 104.057977
+        },
+        "score": 121,
+        "distanceKm": 0.598
+      },
+      {
+        "title": "成都市树德实验中学-西南门",
+        "address": "四川省成都市青羊区东马棚街9号成都市树德实验中学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.668164,
+          "lng": 104.059144
+        },
+        "score": 89,
+        "distanceKm": 0.653
+      },
+      {
+        "title": "成都市树德实验中学-西南1门",
+        "address": "四川省成都市青羊区东马棚街9号成都市树德实验中学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.668488,
+          "lng": 104.058331
+        },
+        "score": 84,
+        "distanceKm": 0.632
+      },
+      {
+        "title": "成都市树德实验中学-西南2门",
+        "address": "四川省成都市青羊区东马棚街9号成都市树德实验中学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.668839,
+          "lng": 104.057551
+        },
+        "score": 84,
+        "distanceKm": 0.619
+      },
+      {
+        "title": "成都市树德实验中学教师宿舍2幢",
+        "address": "四川省成都市青羊区树德实验中学教师宿舍",
+        "category": "房产小区:房产小区附属",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.669168,
+          "lng": 104.057304
+        },
+        "score": 79,
+        "distanceKm": 0.595
+      },
+      {
+        "title": "成都市树德实验中学教师宿舍-1幢",
+        "address": "四川省成都市青羊区东马棚街成都市树德实验中学教师宿舍",
+        "category": "房产小区:房产小区附属",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.669183,
+          "lng": 104.05705
+        },
+        "score": 75,
+        "distanceKm": 0.604
+      }
+    ]
+  },
+  "青羊区:middle:成都市青羊实验中学": {
+    "school": "成都市青羊实验中学",
+    "district": "青羊区",
+    "type": "middle",
+    "old": [
+      104.02,
+      30.673
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都市青羊实验中学(光华校区)",
+      "address": "四川省成都市青羊区光华北二路159号(中坝地铁站B口步行390米)",
+      "category": "教育学校:中学",
+      "ad_info": {
+        "adcode": 510105,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "青羊区"
+      },
+      "location": {
+        "lat": 30.674897,
+        "lng": 103.966942
+      },
+      "score": 125,
+      "distanceKm": 5.07
+    },
+    "candidates": [
+      {
+        "title": "成都市青羊实验中学(光华校区)",
+        "address": "四川省成都市青羊区光华北二路159号(中坝地铁站B口步行390米)",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.674897,
+          "lng": 103.966942
+        },
+        "score": 125,
+        "distanceKm": 5.07
+      },
+      {
+        "title": "成都青羊区实验中学附属小学",
+        "address": "四川省成都市青羊区光华街道双新南路1号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.668027,
+          "lng": 103.997179
+        },
+        "score": 123,
+        "distanceKm": 2.248
+      },
+      {
+        "title": "成都市青羊实验中学(优品道校区)",
+        "address": "四川省成都市青羊区光华街道优品街99号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.664392,
+          "lng": 104.003089
+        },
+        "score": 123,
+        "distanceKm": 1.876
+      },
+      {
+        "title": "成都市青羊实验中学-东南门",
+        "address": "四川省成都市青羊区优品街99号成都市青羊实验中学(优品道校区)",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.662978,
+          "lng": 104.003014
+        },
+        "score": 113,
+        "distanceKm": 1.967
+      },
+      {
+        "title": "成都市树德实验中学",
+        "address": "四川省成都市青羊区少城街道东马棚街9号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.668905,
+          "lng": 104.057977
+        },
+        "score": 111,
+        "distanceKm": 3.654
+      },
+      {
+        "title": "成都市树德实验中学(西区)",
+        "address": "四川省成都市青羊区草堂北支路5号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510105,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "青羊区"
+        },
+        "location": {
+          "lat": 30.665078,
+          "lng": 104.027616
+        },
+        "score": 107,
+        "distanceKm": 1.141
+      }
+    ]
+  },
+  "武侯区:primary:成都市武侯区光明学校": {
+    "school": "成都市武侯区光明学校",
+    "district": "武侯区",
+    "type": "primary",
+    "old": [
+      103.986,
+      30.65
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都市武侯区光明实验学校-西北门",
+      "address": "四川省成都市武侯区成双大道中段与草金路南段交叉口正南方向83米左右",
+      "category": "室内及附属设施:通行设施类:门/出入口",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.603157,
+        "lng": 103.973713
+      },
+      "score": 93,
+      "distanceKm": 5.33
+    },
+    "candidates": [
+      {
+        "title": "成都市武侯区光明实验学校-西北门",
+        "address": "四川省成都市武侯区成双大道中段与草金路南段交叉口正南方向83米左右",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.603157,
+          "lng": 103.973713
+        },
+        "score": 93,
+        "distanceKm": 5.33
+      },
+      {
+        "title": "广汇广告材料(成都武侯店)",
+        "address": "四川省成都市武侯区成双大道中段942号A区3号",
+        "category": "购物:文化用品",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.603722,
+          "lng": 103.975814
+        },
+        "score": 42,
+        "distanceKm": 5.228
+      },
+      {
+        "title": "光明学校招生办",
+        "address": "四川省成都市双流区黄甲街道龙湖路73号双流光明学校",
+        "category": "教育学校:教育学校附属",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.52958,
+          "lng": 103.968196
+        },
+        "score": 40,
+        "distanceKm": 13.474
+      },
+      {
+        "title": "都江堰市光明团结小学",
+        "address": "四川省成都市都江堰市景中路36号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510181,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "都江堰市"
+        },
+        "location": {
+          "lat": 30.985696,
+          "lng": 103.635128
+        },
+        "score": 34,
+        "distanceKm": 50.072
+      },
+      {
+        "title": "成都祺宝宝马",
+        "address": "四川省成都市武侯区成双大道中段968号",
+        "category": "汽车:汽车销售",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.605041,
+          "lng": 103.973984
+        },
+        "score": 31,
+        "distanceKm": 5.121
+      },
+      {
+        "title": "快鱼(双流光明学校店)",
+        "address": "四川省成都市双流区黄甲街道杨桥路246号",
+        "category": "购物:服饰鞋包",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.529394,
+          "lng": 103.968173
+        },
+        "score": 24,
+        "distanceKm": 13.495
+      }
+    ]
+  },
+  "武侯区:primary:成都市武侯区通达学校": {
+    "school": "成都市武侯区通达学校",
+    "district": "武侯区",
+    "type": "primary",
+    "old": [
+      103.998,
+      30.656
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都市武侯区五七学校",
+      "address": "四川省成都市武侯区簇锦街道太平园路156号",
+      "category": "教育学校:小学",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.623349,
+        "lng": 104.014177
+      },
+      "score": 101,
+      "distanceKm": 3.94
+    },
+    "candidates": [
+      {
+        "title": "成都市武侯区五七学校",
+        "address": "四川省成都市武侯区簇锦街道太平园路156号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.623349,
+          "lng": 104.014177
+        },
+        "score": 101,
+        "distanceKm": 3.94
+      },
+      {
+        "title": "成都市武侯区育英学校",
+        "address": "四川省成都市武侯区鞋都南四路1号",
+        "category": "教育学校:其它教育学校",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.603016,
+          "lng": 103.974439
+        },
+        "score": 91,
+        "distanceKm": 6.297
+      },
+      {
+        "title": "成都市武侯区艺高学校",
+        "address": "四川省成都市武侯区南三环路五段109号",
+        "category": "教育学校:职业技术学校",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.614436,
+          "lng": 104.020007
+        },
+        "score": 91,
+        "distanceKm": 5.07
+      },
+      {
+        "title": "成都市武侯实验小学",
+        "address": "四川省成都市武侯区浆洗街街道少陵路16号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.648409,
+          "lng": 104.028383
+        },
+        "score": 89,
+        "distanceKm": 3.021
+      },
+      {
+        "title": "成都市武侯区教科院附属小学",
+        "address": "四川省成都市武侯区沙堰街96号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.654948,
+          "lng": 104.002924
+        },
+        "score": 79,
+        "distanceKm": 0.484
+      },
+      {
+        "title": "成都市武侯区特殊教育学校(本部)",
+        "address": "四川省成都市武侯区晋阳街道金雁路175号",
+        "category": "教育学校:其它教育学校",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.656646,
+          "lng": 103.999672
+        },
+        "score": 74,
+        "distanceKm": 0.175
+      }
+    ]
+  },
+  "武侯区:middle:成都市棕北中学（科院）": {
+    "school": "成都市棕北中学（科院）",
+    "district": "武侯区",
+    "type": "middle",
+    "old": [
+      104.02,
+      30.65
+    ],
+    "status": "matched",
+    "best": {
+      "title": "棕北中学",
+      "address": "四川省成都市武侯区玉林街道科院街10号(川大望江校区地铁站C口步行490米)",
+      "category": "教育学校:中学",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.626587,
+        "lng": 104.070788
+      },
+      "score": 90,
+      "distanceKm": 5.503
+    },
+    "candidates": [
+      {
+        "title": "棕北中学",
+        "address": "四川省成都市武侯区玉林街道科院街10号(川大望江校区地铁站C口步行490米)",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.626587,
+          "lng": 104.070788
+        },
+        "score": 90,
+        "distanceKm": 5.503
+      },
+      {
+        "title": "棕北中学(东门)",
+        "address": "四川省成都市武侯区科院街10号棕北中学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.62701,
+          "lng": 104.071256
+        },
+        "score": 64,
+        "distanceKm": 5.52
+      },
+      {
+        "title": "紫燕百味鸡(科院店)",
+        "address": "四川省成都市武侯区玉林街道科院路与锦绣巷交叉路口处(棕北中学斜对面)",
+        "category": "美食:小吃快餐",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.627643,
+          "lng": 104.071842
+        },
+        "score": 61,
+        "distanceKm": 5.538
+      },
+      {
+        "title": "安德鲁森(科院街12号院店)",
+        "address": "四川省成都市武侯区玉林街道科院路12号附3号(棕北中学旁)",
+        "category": "美食:面包甜点",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.626886,
+          "lng": 104.071593
+        },
+        "score": 53,
+        "distanceKm": 5.555
+      },
+      {
+        "title": "棕北中学公司",
+        "address": "四川省成都市武侯区科院街与锦绣巷交叉口正西方向72米左右",
+        "category": "公司企业:公司企业",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.626397,
+          "lng": 104.070911
+        },
+        "score": 24,
+        "distanceKm": 5.523
+      },
+      {
+        "title": "大龙燚火锅(科华店原棕北店)",
+        "address": "四川省成都市武侯区玉林街道科院街5号(近领事馆路棕北中学)",
+        "category": "美食:火锅",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.625891,
+          "lng": 104.071801
+        },
+        "score": 23,
+        "distanceKm": 5.625
+      }
+    ]
+  },
+  "武侯区:middle:成都市棕北中学（桐梓林）": {
+    "school": "成都市棕北中学（桐梓林）",
+    "district": "武侯区",
+    "type": "middle",
+    "old": [
+      104.033,
+      30.644
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都市桐梓林小学",
+      "address": "四川省成都市武侯区火车南站街道桐梓林中路2号",
+      "category": "教育学校:小学",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.614381,
+        "lng": 104.060764
+      },
+      "score": 110,
+      "distanceKm": 4.224
+    },
+    "candidates": [
+      {
+        "title": "成都市桐梓林小学",
+        "address": "四川省成都市武侯区火车南站街道桐梓林中路2号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.614381,
+          "lng": 104.060764
+        },
+        "score": 110,
+        "distanceKm": 4.224
+      },
+      {
+        "title": "成都市棕北中学",
+        "address": "四川省成都市武侯区火车南站街道桐梓林南路10号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.612173,
+          "lng": 104.05923
+        },
+        "score": 107,
+        "distanceKm": 4.331
+      },
+      {
+        "title": "中海·桐梓林万宸",
+        "address": "四川省成都市武侯区桐梓林路4-5号",
+        "category": "教育学校:职业技术学校",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.61031,
+          "lng": 104.060294
+        },
+        "score": 98,
+        "distanceKm": 4.559
+      },
+      {
+        "title": "棕北中学",
+        "address": "四川省成都市武侯区玉林街道科院街10号(川大望江校区地铁站C口步行490米)",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.626587,
+          "lng": 104.070788
+        },
+        "score": 84,
+        "distanceKm": 4.094
+      },
+      {
+        "title": "成都市棕北中学-南门",
+        "address": "四川省成都市武侯区火车南站街道桐梓林南路10号棕北中学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.611742,
+          "lng": 104.059364
+        },
+        "score": 81,
+        "distanceKm": 4.377
+      },
+      {
+        "title": "四川省成都市玉林中学(玉林校区)",
+        "address": "四川省成都市武侯区玉林东路11号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.628736,
+          "lng": 104.060474
+        },
+        "score": 80,
+        "distanceKm": 3.123
+      }
+    ]
+  },
+  "高新区:primary:成都高新区芳草小学": {
+    "school": "成都高新区芳草小学",
+    "district": "高新区",
+    "type": "primary",
+    "old": [
+      104.053179,
+      30.633015
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都高新区芳草小学",
+      "address": "四川省成都市武侯区沙子堰中巷29",
+      "category": "教育学校:小学",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.630649,
+        "lng": 104.055537
+      },
+      "score": 194,
+      "distanceKm": 0.346
+    },
+    "candidates": [
+      {
+        "title": "成都高新区芳草小学",
+        "address": "四川省成都市武侯区沙子堰中巷29",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.630649,
+          "lng": 104.055537
+        },
+        "score": 194,
+        "distanceKm": 0.346
+      },
+      {
+        "title": "成都高新区芳草南区小学",
+        "address": "四川省成都市武侯区泰和二街180号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.601088,
+          "lng": 104.05507
+        },
+        "score": 127,
+        "distanceKm": 3.548
+      },
+      {
+        "title": "四川省成都高新区实验小学",
+        "address": "四川省成都市武侯区芳草街街道高新区紫薇东路71号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.609449,
+          "lng": 104.053027
+        },
+        "score": 117,
+        "distanceKm": 2.616
+      },
+      {
+        "title": "四川省成都高新区实验小学",
+        "address": "四川省成都市武侯区芳草街街道高新区神仙树西路8号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.618424,
+          "lng": 104.047081
+        },
+        "score": 117,
+        "distanceKm": 1.721
+      },
+      {
+        "title": "四川省成都高新区实验小学-南门",
+        "address": "四川省成都市武侯区紫薇东路71号成都高新区实验小学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.608999,
+          "lng": 104.053715
+        },
+        "score": 87,
+        "distanceKm": 2.666
+      },
+      {
+        "title": "成都师范银都小学(紫荆校区)",
+        "address": "四川省成都市武侯区高新区紫荆北路1号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.620524,
+          "lng": 104.05462
+        },
+        "score": 78,
+        "distanceKm": 1.393
+      }
+    ]
+  },
+  "高新区:primary:成都高新中学天府一街分校": {
+    "school": "成都高新中学天府一街分校",
+    "district": "高新区",
+    "type": "primary",
+    "old": [
+      104.044,
+      30.545
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都高新中学天府一街分校",
+      "address": "四川省成都市武侯区成都高新区大源东街116号",
+      "category": "教育学校:中学",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.554574,
+        "lng": 104.035849
+      },
+      "score": 128,
+      "distanceKm": 1.318
+    },
+    "candidates": [
+      {
+        "title": "成都高新中学天府一街分校",
+        "address": "四川省成都市武侯区成都高新区大源东街116号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.554574,
+          "lng": 104.035849
+        },
+        "score": 128,
+        "distanceKm": 1.318
+      },
+      {
+        "title": "成都高新中学天府一街分校-西门",
+        "address": "四川省成都市武侯区大源东街116号成都高新中学天府一街分校",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.554763,
+          "lng": 104.035257
+        },
+        "score": 66,
+        "distanceKm": 1.369
+      },
+      {
+        "title": "成都高新中学天府一街分校-北门",
+        "address": "四川省成都市武侯区大源东街116号成都高新中学天府一街分校",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.555504,
+          "lng": 104.035808
+        },
+        "score": 66,
+        "distanceKm": 1.405
+      },
+      {
+        "title": "成都教科院附中(一街校区)-南门",
+        "address": "四川省成都市武侯区大源东街116号成都高新中学天府一街分校",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.553462,
+          "lng": 104.036007
+        },
+        "score": 56,
+        "distanceKm": 1.211
+      },
+      {
+        "title": "成都农商银行(高新支行)",
+        "address": "四川省成都市武侯区成汉南路11号(市一医院地铁站C1口步行400米)",
+        "category": "银行金融:银行",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.587773,
+          "lng": 104.05475
+        },
+        "score": 39,
+        "distanceKm": 4.858
+      },
+      {
+        "title": "成都农商银行24小时自助银行(高新支行)",
+        "address": "四川省成都市武侯区石羊街道府城大道西段455号(市一医院地铁站E口步行220米)",
+        "category": "银行金融:自动提款机",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.587839,
+          "lng": 104.054749
+        },
+        "score": 28,
+        "distanceKm": 4.865
+      }
+    ]
+  },
+  "高新区:middle:成都高新中学天府一街分校（初中部）": {
+    "school": "成都高新中学天府一街分校（初中部）",
+    "district": "高新区",
+    "type": "middle",
+    "old": [
+      104.044,
+      30.545
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都高新中学天府一街分校",
+      "address": "四川省成都市武侯区成都高新区大源东街116号",
+      "category": "教育学校:中学",
+      "ad_info": {
+        "adcode": 510107,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "武侯区"
+      },
+      "location": {
+        "lat": 30.554574,
+        "lng": 104.035849
+      },
+      "score": 206,
+      "distanceKm": 1.318
+    },
+    "candidates": [
+      {
+        "title": "成都高新中学天府一街分校",
+        "address": "四川省成都市武侯区成都高新区大源东街116号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.554574,
+          "lng": 104.035849
+        },
+        "score": 206,
+        "distanceKm": 1.318
+      },
+      {
+        "title": "成都高新中学天府一街分校-北门",
+        "address": "四川省成都市武侯区大源东街116号成都高新中学天府一街分校",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.555504,
+          "lng": 104.035808
+        },
+        "score": 144,
+        "distanceKm": 1.405
+      },
+      {
+        "title": "成都高新中学天府一街分校-西门",
+        "address": "四川省成都市武侯区大源东街116号成都高新中学天府一街分校",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.554763,
+          "lng": 104.035257
+        },
+        "score": 144,
+        "distanceKm": 1.369
+      },
+      {
+        "title": "成都市第七中学(高新校区)国际部高中",
+        "address": "四川省成都市武侯区天府一街与富华北路交叉口正南方向108米左右",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.560422,
+          "lng": 104.041856
+        },
+        "score": 64,
+        "distanceKm": 1.724
+      },
+      {
+        "title": "成都美视师一学校",
+        "address": "四川省成都市武侯区天府大道中段1340号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.538545,
+          "lng": 104.065789
+        },
+        "score": 61,
+        "distanceKm": 2.203
+      },
+      {
+        "title": "成都市第七中学(高新校区)-北门",
+        "address": "四川省成都市武侯区天府一街成都市第七中学高新校区",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.560422,
+          "lng": 104.044066
+        },
+        "score": 60,
+        "distanceKm": 1.712
+      }
+    ]
+  },
+  "高新区:middle:上海师范大学成都海川中学校（暂定名）": {
+    "school": "上海师范大学成都海川中学校（暂定名）",
+    "district": "高新区",
+    "type": "middle",
+    "old": [
+      104.092,
+      30.561
+    ],
+    "status": "review",
+    "best": {
+      "title": "上海师范大学海川中学校",
+      "address": "四川省成都市双流区新通南二路",
+      "category": "教育学校:中学",
+      "ad_info": {
+        "adcode": 510116,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "双流区"
+      },
+      "location": {
+        "lat": 30.516746,
+        "lng": 104.103609
+      },
+      "score": 67,
+      "distanceKm": 5.036
+    },
+    "candidates": [
+      {
+        "title": "上海师范大学海川中学校",
+        "address": "四川省成都市双流区新通南二路",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.516746,
+          "lng": 104.103609
+        },
+        "score": 67,
+        "distanceKm": 5.036
+      },
+      {
+        "title": "成都高新区中和利民学校",
+        "address": "四川省成都市双流区应龙社区5组315号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.538279,
+          "lng": 104.12122
+        },
+        "score": 57,
+        "distanceKm": 3.763
+      },
+      {
+        "title": "成都高新区银都紫藤初中学校",
+        "address": "四川省成都市双流区雅和南二路211号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.505422,
+          "lng": 104.077398
+        },
+        "score": 57,
+        "distanceKm": 6.325
+      },
+      {
+        "title": "成都高新区银都紫藤初中东区学校",
+        "address": "四川省成都市双流区观东二街599号",
+        "category": "教育学校:中学",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.530234,
+          "lng": 104.087509
+        },
+        "score": 55,
+        "distanceKm": 3.442
+      },
+      {
+        "title": "成都高新区行知小学",
+        "address": "四川省成都市双流区中和街道吉龙二街268号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510116,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "双流区"
+        },
+        "location": {
+          "lat": 30.535203,
+          "lng": 104.090681
+        },
+        "score": 53,
+        "distanceKm": 2.866
+      },
+      {
+        "title": "成都高新区庆安小学",
+        "address": "四川省成都市武侯区石羊街道高新区新雅街6号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510107,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "武侯区"
+        },
+        "location": {
+          "lat": 30.604024,
+          "lng": 104.031617
+        },
+        "score": 49,
+        "distanceKm": 7.49
+      }
+    ]
+  },
+  "成华区:primary:成都市蜀都小学校": {
+    "school": "成都市蜀都小学校",
+    "district": "成华区",
+    "type": "primary",
+    "old": [
+      104.107,
+      30.67
+    ],
+    "status": "matched",
+    "best": {
+      "title": "成都市蜀都小学(成都市成华小学校蜀都分校)",
+      "address": "四川省成都市成华区民和路300号",
+      "category": "教育学校:小学",
+      "ad_info": {
+        "adcode": 510108,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "成华区"
+      },
+      "location": {
+        "lat": 30.692759,
+        "lng": 104.11569
+      },
+      "score": 114,
+      "distanceKm": 2.659
+    },
+    "candidates": [
+      {
+        "title": "成都市蜀都小学(成都市成华小学校蜀都分校)",
+        "address": "四川省成都市成华区民和路300号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.692759,
+          "lng": 104.11569
+        },
+        "score": 114,
+        "distanceKm": 2.659
+      },
+      {
+        "title": "成都市蜀都小学(成华小学蜀都分校)-北门",
+        "address": "四川省成都市成华区民和路300号成都市成华小学蜀都分校",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.693548,
+          "lng": 104.11557
+        },
+        "score": 101,
+        "distanceKm": 2.739
+      },
+      {
+        "title": "成都石室蜀都犀方路小学",
+        "address": "四川省成都市郫都区犀浦街道犀方路363号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510117,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "郫都区"
+        },
+        "location": {
+          "lat": 30.765863,
+          "lng": 103.97663
+        },
+        "score": 55,
+        "distanceKm": 16.371
+      },
+      {
+        "title": "成都市蜀都小学(成华小学蜀都分校)停车场-出入口",
+        "address": "四川省成都市成华区仙韵一路与民和路交叉口东南方向168米左右",
+        "category": "室内及附属设施:通行设施类:停车场出入口",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.691749,
+          "lng": 104.115662
+        },
+        "score": 55,
+        "distanceKm": 2.552
+      },
+      {
+        "title": "成都石室蜀都犀方路小学-西北门",
+        "address": "四川省成都市郫都区石室蜀都犀方路小学",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510117,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "郫都区"
+        },
+        "location": {
+          "lat": 30.766209,
+          "lng": 103.976296
+        },
+        "score": 30,
+        "distanceKm": 16.42
+      },
+      {
+        "title": "四川蜀都卫生学校",
+        "address": "四川省成都市龙泉驿区大面镇玉石社区五组136号",
+        "category": "教育学校:职业技术学校",
+        "ad_info": {
+          "adcode": 510112,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "龙泉驿区"
+        },
+        "location": {
+          "lat": 30.606712,
+          "lng": 104.191458
+        },
+        "score": 28,
+        "distanceKm": 10.696
+      }
+    ]
+  },
+  "成华区:primary:电子科技大学附属实验小学龙潭分校": {
+    "school": "电子科技大学附属实验小学龙潭分校",
+    "district": "成华区",
+    "type": "primary",
+    "old": [
+      104.158,
+      30.706
+    ],
+    "status": "review",
+    "best": {
+      "title": "电子科技大学附属实验小学(龙潭校区)",
+      "address": "四川省成都市成华区龙潭街道成泰路8号",
+      "category": "教育学校:小学",
+      "ad_info": {
+        "adcode": 510108,
+        "province": "四川省",
+        "city": "成都市",
+        "district": "成华区"
+      },
+      "location": {
+        "lat": 30.696518,
+        "lng": 104.168344
+      },
+      "score": 84,
+      "distanceKm": 1.443
+    },
+    "candidates": [
+      {
+        "title": "电子科技大学附属实验小学(龙潭校区)",
+        "address": "四川省成都市成华区龙潭街道成泰路8号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.696518,
+          "lng": 104.168344
+        },
+        "score": 84,
+        "distanceKm": 1.443
+      },
+      {
+        "title": "电子科技大学附属实验小学(华翰校区)",
+        "address": "四川省成都市成华区龙潭街道华翰路水乡茗居西区东北侧约270米",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.698483,
+          "lng": 104.17834
+        },
+        "score": 71,
+        "distanceKm": 2.113
+      },
+      {
+        "title": "电子科技大学附属实验小学(华泰校区)-东门",
+        "address": "四川省成都市成华区成泰路8号电子科技大学附属实验小学(华泰校区)",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.696532,
+          "lng": 104.169223
+        },
+        "score": 52,
+        "distanceKm": 1.501
+      },
+      {
+        "title": "电子科技大学附属实验小学(华泰校区)-1号门",
+        "address": "四川省成都市成华区成泰路8号电子科技大学附属实验小学(华泰校区)",
+        "category": "室内及附属设施:通行设施类:门/出入口",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.696884,
+          "lng": 104.168259
+        },
+        "score": 48,
+        "distanceKm": 1.408
+      },
+      {
+        "title": "成都大学附属实验小学(卓逸校区)",
+        "address": "四川省成都市成华区隆兴南四路29号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.700895,
+          "lng": 104.186832
+        },
+        "score": 46,
+        "distanceKm": 2.809
+      },
+      {
+        "title": "成都大学附属实验小学(卓立校区)",
+        "address": "四川省成都市成华区丛桂二巷3号",
+        "category": "教育学校:小学",
+        "ad_info": {
+          "adcode": 510108,
+          "province": "四川省",
+          "city": "成都市",
+          "district": "成华区"
+        },
+        "location": {
+          "lat": 30.679298,
+          "lng": 104.181776
+        },
+        "score": 42,
+        "distanceKm": 3.733
+      }
+    ]
+  }
+}

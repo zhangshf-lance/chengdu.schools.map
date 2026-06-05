@@ -737,10 +737,16 @@ const DISTRICT_BOUNDS = {
   wuhou:     { minLng: 103.968, minLat: 30.590, maxLng: 104.082, maxLat: 30.662 },
   gaoxin:    { minLng: 104.018, minLat: 30.528, maxLng: 104.108, maxLat: 30.628 },
   chenghua:  { minLng: 104.072, minLat: 30.652, maxLng: 104.165, maxLat: 30.718 },
+  longquanyi:{ minLng: 104.140, minLat: 30.464, maxLng: 104.455, maxLat: 30.723 },
+  qingbaijiang:{ minLng: 104.161, minLat: 30.658, maxLng: 104.494, maxLat: 30.913 },
+  xindu:     { minLng: 103.903, minLat: 30.676, maxLng: 104.327, maxLat: 30.965 },
+  wenjiang:  { minLng: 103.688, minLat: 30.614, maxLng: 103.946, maxLat: 30.884 },
   shuangliu: { minLng: 103.792, minLat: 30.227, maxLng: 104.269, maxLat: 30.667 },
+  pidu:      { minLng: 103.716, minLat: 30.719, maxLng: 104.049, maxLat: 30.960 },
   jinniu:    { minLng: 103.975, minLat: 30.695, maxLng: 104.075, maxLat: 30.762 },
   xinjin:    { minLng: 103.720, minLat: 30.340, maxLng: 103.900, maxLat: 30.490 },
   pujiang:   { minLng: 103.390, minLat: 30.100, maxLng: 103.630, maxLat: 30.280 },
+  dujiangyan:{ minLng: 103.380, minLat: 30.730, maxLng: 104.050, maxLat: 31.360 },
 };
 
 const GAOXIN_SUBAREAS = [
@@ -1297,7 +1303,7 @@ function showDetail(school) {
       const linkedList = isPrimary ? g.middles : g.primaries;
       const chipClass = isPrimary ? 'middle-chip' : 'primary-chip';
       const label = isPrimary ? '可对口初中' : '对口小学';
-      const modeText = g.type === 'single' ? '单校划片' : '多校电脑随机';
+      const modeText = g.type === 'single' ? '单校划片' : (g.type === 'reference' ? '辅助绑定' : '多校电脑随机');
       return `
         ${i > 0 ? '<div style="height:8px;"></div>' : ''}
         <span class="group-badge${g.type === 'single' ? ' single' : ''}">📍 ${escapeHtml(g.name)} · ${modeText}</span>
