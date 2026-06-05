@@ -17,5 +17,6 @@ xls_data.json
 *.csv
 
 node_modules/
+.android-build/
 .DS_Store
 Thumbs.db
