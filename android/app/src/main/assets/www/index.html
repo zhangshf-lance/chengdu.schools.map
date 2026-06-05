@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+<title>成都学区地图 · 真实划片数据</title>
+<!-- Leaflet 样式：先尝试本地 vendor 目录，加载失败时回退到 CDN -->
+<link rel="stylesheet" href="vendor/leaflet.css"
+      onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; width: 100%; overflow: hidden;
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px; color: #1f2937;
+    -webkit-font-smoothing: antialiased; }
+  #app { position: relative; height: 100vh; width: 100vw; overflow: hidden; }
+
+  /* ============ 顶部导航 ============ */
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 56px; padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .brand {
+    font-size: 16px; font-weight: 600; letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #b91c1c 0%, #ea580c 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .divider { color: #cbd5e1; font-weight: 300; }
+  .region-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 500; color: #374151;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .region-btn:hover { background: #e5e7eb; }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px;
+    background: transparent; border: 1px solid #e5e7eb; border-radius: 8px;
+    color: #6b7280; cursor: pointer; transition: all 0.15s;
+  }
+  .icon-btn:hover { background: #f3f4f6; color: #1f2937; }
+  .data-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 8px; font-size: 11px; color: #92400e;
+    background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px;
+    cursor: help;
+  }
+
+  /* ============ 地图 ============ */
+  #map {
+    position: absolute; top: 56px; left: 0; right: 0; bottom: 0;
+    background: #e8e6df;
+  }
+
+  /* 学校标记点 */
+  .school-marker {
+    width: 28px; height: 28px;
+    background: #3b82f6;
+    border: 2.5px solid #fff;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+  }
+  .school-marker:hover {
+    transform: rotate(-45deg) scale(1.18);
+    z-index: 1000;
+  }
+  .school-marker.middle-school {
+    background: #10b981;
+  }
+  .school-marker.gaoxin-south {
+    background: #2563eb;
+  }
+  .school-marker.gaoxin-west {
+    background: #7c3aed;
+  }
+  .school-marker.gaoxin-south.middle-school {
+    background: #059669;
+  }
+  .school-marker.gaoxin-west.middle-school {
+    background: #6d28d9;
+  }
+  .school-marker.selected {
+    background: #ea580c;
+    transform: rotate(-45deg) scale(1.25);
+    z-index: 1000;
+  }
+  .school-marker-inner {
+    transform: rotate(45deg);
+    color: #fff; font-size: 12px; font-weight: 600;
+    line-height: 1;
+  }
+
+  /* ============ 侧边栏 ============ */
+  .sidebar {
+    position: absolute; top: 72px; right: 12px;
+    width: 280px; max-height: calc(100vh - 96px);
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    z-index: 800; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .sidebar-title-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .sidebar-title { font-size: 13px; font-weight: 600; color: #374151; letter-spacing: 0.3px; }
+  .sidebar-count { font-size: 11px; color: #9ca3af; }
+  .search-box {
+    width: 100%; padding: 6px 10px;
+    background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px;
+    font-family: inherit; font-size: 12px; color: #1f2937;
+    outline: none;
+  }
+  .search-box:focus { border-color: #3b82f6; background: #fff; }
+  .type-filter { display: flex; gap: 4px; margin-top: 8px; }
+  .type-btn {
+    flex: 1; padding: 4px 0;
+    background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px;
+    font-family: inherit; font-size: 12px; font-weight: 500; color: #6b7280;
+    cursor: pointer; transition: all 0.12s;
+  }
+  .type-btn:hover { background: #e5e7eb; }
+  .type-btn.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+  .type-btn[data-type="middle"].active { background: #10b981; border-color: #10b981; }
+  .school-list { flex: 1; overflow-y: auto; padding: 6px 0; }
+  .school-item {
+    padding: 9px 16px;
+    cursor: pointer; transition: background 0.12s;
+    font-size: 13px; color: #374151;
+    border-left: 3px solid transparent;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .school-item:hover { background: #f9fafb; }
+  .school-item.active {
+    background: #fff7ed; border-left-color: #ea580c;
+    font-weight: 500; color: #9a3412;
+  }
+  .school-item-icon {
+    flex-shrink: 0; width: 8px; height: 8px;
+    background: #3b82f6; border-radius: 50%;
+  }
+  .school-item.middle-type .school-item-icon { background: #10b981; }
+  .school-item.active .school-item-icon { background: #ea580c; }
+  .school-item-main {
+    min-width: 0; flex: 1;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .subdistrict-chip {
+    display: inline-flex; align-items: center;
+    height: 18px; padding: 0 6px; border-radius: 999px;
+    font-size: 10px; font-weight: 600; line-height: 18px;
+    border: 1px solid #bfdbfe; background: #eff6ff; color: #1d4ed8;
+    white-space: nowrap;
+  }
+  .subdistrict-chip.west {
+    border-color: #ddd6fe; background: #f5f3ff; color: #6d28d9;
+  }
+  .empty-list {
+    padding: 18px 16px; font-size: 12px; color: #9ca3af; text-align: center;
+  }
+
+  /* ============ 学校详情面板 ============ */
+  .detail-panel {
+    position: absolute; top: 72px; left: 12px;
+    width: 360px; max-height: calc(100vh - 96px);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    z-index: 850;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .detail-panel.hidden { display: none; }
+  .detail-header {
+    padding: 16px 16px 12px;
+    background: linear-gradient(135deg, #fff7ed, #fef3c7);
+    border-bottom: 1px solid #fde68a;
+    position: relative;
+  }
+  .detail-school-name {
+    font-size: 16px; font-weight: 600; color: #7c2d12;
+    padding-right: 28px; line-height: 1.4;
+  }
+  .detail-meta {
+    margin-top: 6px; font-size: 11px; color: #9a3412;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .detail-meta-tag {
+    padding: 2px 6px; background: rgba(234,88,12,0.12);
+    border-radius: 4px; font-weight: 500;
+  }
+  .detail-close {
+    position: absolute; top: 12px; right: 12px;
+    background: transparent; border: none;
+    width: 24px; height: 24px; border-radius: 6px;
+    cursor: pointer; color: #92400e;
+    font-size: 20px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .detail-close:hover { background: rgba(0,0,0,0.06); }
+  .detail-body {
+    flex: 1; overflow-y: auto; padding: 14px 16px 18px;
+  }
+  .detail-section {
+    margin-bottom: 14px;
+  }
+  .detail-section-title {
+    font-size: 11px; font-weight: 600; color: #92400e;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .detail-zone {
+    font-size: 13px; color: #374151; line-height: 1.7;
+    background: #fafaf9; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid #f0ede4;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .detail-source {
+    margin-top: 14px; padding: 8px 10px;
+    background: #f0f9ff; border-left: 3px solid #3b82f6;
+    border-radius: 4px; font-size: 11px; color: #1e40af;
+    line-height: 1.6;
+  }
+  .detail-source a { color: #1e40af; word-break: break-all; }
+
+  /* ============ 片区绑定 ============ */
+  .school-marker.linked {
+    background: #f59e0b;
+    transform: rotate(-45deg) scale(1.12);
+    z-index: 900;
+  }
+  .school-marker.linked.middle-school { background: #d97706; }
+  .group-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 12px;
+    font-size: 11px; font-weight: 600;
+    background: #fef3c7; color: #92400e; border: 1px solid #fde68a;
+    margin-bottom: 7px;
+  }
+  .group-badge.single { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+  .group-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+  .group-link-chip {
+    padding: 3px 9px; border-radius: 6px; font-size: 12px;
+    border: 1px solid; cursor: pointer; transition: opacity 0.12s;
+  }
+  .group-link-chip:hover { opacity: 0.75; }
+  .group-link-chip.middle-chip {
+    background: #ecfdf5; border-color: #6ee7b7; color: #065f46;
+  }
+  .group-link-chip.primary-chip {
+    background: #eff6ff; border-color: #93c5fd; color: #1e40af;
+  }
+
+  /* ============ 弹窗 ============ */
+  .modal {
+    position: fixed; inset: 0; z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal.hidden { display: none; }
+  .modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(15,23,42,0.5);
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+  .modal-content {
+    position: relative; width: 90%; max-width: 460px; max-height: 80vh;
+    background: #fff; border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    overflow: hidden; display: flex; flex-direction: column;
+    animation: scaleIn 0.2s ease;
+  }
+  @keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-header {
+    padding: 16px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 15px; font-weight: 600; color: #1f2937;
+  }
+  .modal-body {
+    padding: 18px; overflow-y: auto;
+    font-size: 14px; color: #4b5563; line-height: 1.75;
+  }
+  .modal-body p { margin-bottom: 10px; }
+  .modal-body strong { color: #1f2937; }
+  .warning-box {
+    background: #fef2f2; border-left: 4px solid #dc2626;
+    padding: 10px 14px; border-radius: 6px; margin: 12px 0;
+    color: #7f1d1d; font-size: 13px;
+  }
+  .info-box {
+    background: #eff6ff; border-left: 4px solid #3b82f6;
+    padding: 10px 14px; border-radius: 6px; margin: 12px 0;
+    color: #1e3a8a; font-size: 13px;
+  }
+  .region-list { padding: 8px 0; overflow-y: auto; }
+  .region-item {
+    padding: 12px 18px; cursor: pointer; transition: background 0.12s;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px; color: #374151;
+  }
+  .region-item:hover { background: #f9fafb; }
+  .region-item.active { background: #fff7ed; color: #9a3412; font-weight: 500; }
+  .region-item-count { font-size: 12px; color: #9ca3af; }
+
+  /* ============ 划片悬停弹窗 ============ */
+  .zone-hover-popup .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    padding: 0; overflow: hidden;
+  }
+  .zone-hover-popup {
+    pointer-events: none;
+  }
+  .zone-hover-popup .leaflet-popup-content { margin: 0; max-height: 260px; overflow-y: auto; }
+  .zone-hover-popup .leaflet-popup-tip-container { opacity: 0.7; }
+  .zhp-name {
+    font-size: 13px; font-weight: 600; color: #7c2d12;
+    padding: 10px 14px 5px; line-height: 1.4;
+  }
+  .zhp-type {
+    font-size: 11px; color: #92400e;
+    padding: 0 14px 7px;
+    border-bottom: 1px solid #fde68a;
+  }
+  .zhp-meta {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    padding: 4px 14px 7px;
+    border-bottom: 1px solid #f0ede4;
+  }
+  .zhp-type-tag, .zhp-public-tag {
+    padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 500;
+  }
+  .zhp-type-tag { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .zhp-public-tag { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .zhp-public-tag.private { background: #fdf4ff; color: #7e22ce; border-color: #e9d5ff; }
+  .zhp-stars { font-size: 14px; letter-spacing: 0.5px; }
+  .stars-full { color: #f59e0b; }
+  .stars-empty { color: #d1d5db; }
+  .zhp-zone {
+    font-size: 12px; color: #374151; line-height: 1.7;
+    padding: 8px 14px 12px;
+    white-space: normal; word-break: break-all;
+  }
+  .zone-group-label {
+    pointer-events: none;
+  }
+  .zone-group-label-inner {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 66px; height: 26px; padding: 0 10px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.94);
+    border: 1px solid rgba(180,83,9,0.28);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+    color: #7c2d12; font-size: 12px; font-weight: 700;
+    white-space: nowrap;
+  }
+  .subarea-label .zone-group-label-inner {
+    min-width: 82px; height: 30px;
+    font-size: 13px;
+  }
+
+  /* ============ Leaflet 覆盖 ============ */
+  .leaflet-container { font-family: inherit; }
+  .leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+  }
+  .leaflet-control-zoom a {
+    background: rgba(255,255,255,0.95) !important;
+    color: #374151 !important;
+    border: none !important;
+    width: 32px !important; height: 32px !important;
+    line-height: 32px !important;
+  }
+  .leaflet-control-attribution {
+    background: rgba(255,255,255,0.85) !important;
+    font-size: 10px !important;
+  }
+  /* 加载失败提示 */
+  .map-fallback {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.95);
+    padding: 20px 28px; border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center; font-size: 13px; color: #6b7280;
+    max-width: 320px; line-height: 1.7;
+    display: none;
+  }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 768px) {
+    .sidebar { width: calc(100vw - 24px); max-width: 240px; }
+    .detail-panel {
+      width: calc(100vw - 24px); left: 12px; right: 12px;
+      max-height: 50vh;
+    }
+    .brand { font-size: 14px; }
+    .data-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="brand">成都学区地图</span>
+      <span class="divider">·</span>
+      <button id="region-btn" class="region-btn">
+        <span id="region-name">锦江区</span>
+        <svg width="10" height="10" viewBox="0 0 10 10">
+          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </button>
+    </div>
+    <div class="topbar-right">
+      <span class="data-badge" title="划片描述来自教育局官方公示原文；部分学校点位已按 GCJ-02 坐标源校正">
+        ⚠ 划片真实 · 点位校正中
+      </span>
+      <button id="info-btn" class="icon-btn" title="数据说明与使用">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"/>
+          <line x1="12" y1="11" x2="12" y2="16"/>
+          <circle cx="12" cy="8" r="0.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="map">
+    <div id="map-fallback" class="map-fallback">
+      地图瓦片加载失败。<br>
+      请检查网络后刷新页面。<br>
+      学校列表仍可正常使用。
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title-row">
+        <span class="sidebar-title">学校列表</span>
+        <span id="school-count" class="sidebar-count"></span>
+      </div>
+      <input type="text" class="search-box" id="search-input" placeholder="搜索学校名称..." />
+      <div class="type-filter" id="type-filter">
+        <button class="type-btn active" data-type="all">全部</button>
+        <button class="type-btn" data-type="primary">小学</button>
+        <button class="type-btn" data-type="middle">初中</button>
+      </div>
+    </div>
+    <div id="school-list" class="school-list"></div>
+  </aside>
+
+  <div id="detail-panel" class="detail-panel hidden">
+    <div class="detail-header">
+      <div id="detail-school-name" class="detail-school-name"></div>
+      <div class="detail-meta">
+        <span id="detail-district" class="detail-meta-tag"></span>
+        <span id="detail-subdistrict" class="detail-meta-tag"></span>
+        <span id="detail-type" class="detail-meta-tag"></span>
+        <span id="detail-public" class="detail-meta-tag"></span>
+      </div>
+      <div id="detail-rating" style="margin-top:4px;font-size:15px;letter-spacing:1px;"></div>
+      <button id="detail-close" class="detail-close">×</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0a8 8 0 100 16A8 8 0 008 0zm1 11.5H7v-2h2v2zm0-3.5H7V4h2v4z"/>
+          </svg>
+          官方公示划片范围
+        </div>
+        <div id="detail-zone" class="detail-zone"></div>
+      </div>
+      <div class="detail-section" id="detail-group-section" style="display:none;">
+        <div class="detail-section-title">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1a7 7 0 100 14A7 7 0 008 1zM2 8a6 6 0 1112 0A6 6 0 012 8zm7-3.5a1 1 0 11-2 0 1 1 0 012 0zM7 7h2v4H7V7z"/>
+          </svg>
+          升学片区绑定
+        </div>
+        <div id="detail-group-content"></div>
+      </div>
+      <div class="detail-source" id="detail-source"></div>
+    </div>
+  </div>
+
+  <div id="region-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>选择区域</span>
+        <button id="region-modal-close" class="detail-close" style="color:#9ca3af;position:static;">×</button>
+      </div>
+      <div id="region-list" class="region-list"></div>
+    </div>
+  </div>
+
+  <div id="info-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>关于本应用</span>
+        <button id="info-modal-close" class="detail-close" style="color:#9ca3af;position:static;">×</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>成都学区地图</strong> 展示成都市各区义务教育阶段公办小学的官方划片信息，帮助查询某街道/楼盘对应的对口学校。</p>
+
+        <div class="info-box">
+          <strong>✓ 划片描述真实</strong><br>
+          每所学校的"划片范围"文字内容来自各区教育局当年公布的官方公示原文（经成都本地宝、网易等媒体转载），<strong>未经任何改写或简化</strong>。
+        </div>
+
+        <div class="warning-box">
+          <strong>⚠ 学校点位已分批校正</strong><br>
+          已可靠命中的学校使用与高德地图同系的 GCJ-02 坐标；未能可靠核验的学校仍保留原示意点位。完整命中与待复核清单见 <strong>school-coordinate-report.json</strong>。
+        </div>
+
+        <p style="margin-top:14px;"><strong>使用方法</strong></p>
+        <p>• 左侧栏可搜索/浏览所有学校<br>
+           • 点击地图标记或列表项，右侧弹出该校的详细划片描述<br>
+           • 顶部"区域"按钮可切换不同的区</p>
+
+        <p style="margin-top:14px;"><strong>当前覆盖范围</strong></p>
+        <p>已收录：<strong>锦江区、青羊区、武侯区、高新区、成华区、金牛区、新津区、蒲江县</strong>公办小学 + 初中划片数据（2024–2025 年）。</p>
+        <p style="color:#6b7280;font-size:12px;">蓝色标记 = 小学，绿色标记 = 初中。</p>
+
+        <p style="margin-top:14px;"><strong>免责声明</strong></p>
+        <p style="color:#7f1d1d;background:#fef2f2;padding:8px 10px;border-radius:6px;font-size:12px;line-height:1.6;">
+          实际入学以当年各区教育局公布信息为准。学区每年可能调整，本工具不承诺信息的实时性。请勿仅凭本工具结果做购房或择校决策。
+        </p>
+
+        <p style="color:#9ca3af;font-size:11px;margin-top:14px;">
+          灵感来自 <a href="https://xieguanglei.github.io/schools-map/" target="_blank" style="color:#9ca3af;">xieguanglei/schools-map</a>，地图基于 Leaflet + 高德地图瓦片。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet 库：先尝试本地 vendor，失败时同步加载 CDN -->
+<script>
+(function() {
+  // 同步加载本地脚本；如果文件不存在，document.write 一个 CDN 脚本
+  var xhr = new XMLHttpRequest();
+  try {
+    xhr.open('HEAD', 'vendor/leaflet.js', false); // 同步
+    xhr.send();
+    if (xhr.status >= 200 && xhr.status < 400) {
+      document.write('<script src="vendor/leaflet.js"><\/script>');
+    } else {
+      document.write('<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');
+    }
+  } catch (e) {
+    // file:// 协议下 XHR 会失败，直接用 CDN
+    document.write('<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');
+  }
+})();
+</script>
+<script src="data.js"></script>
+<script src="district-boundaries.js"></script>
+<script>
+// ============================================================
+// 应用主逻辑
+// ============================================================
+const STATE = {
+  regionId: 'jinjiang',
+  map: null,
+  markers: new Map(),
+  voronoiLayer: null,
+  groupLabelLayer: null,
+  zonePolygons: new Map(),
+  districtRect: null,
+  hoverPopup: null,
+  hoverPopupTimer: null,
+  hoverSchool: null,
+  selectedSchool: null,
+  searchKeyword: '',
+  typeFilter: 'all'
+};
+
+// ---------- 初始化地图 ----------
+function initMap() {
+  const region = REGIONS[STATE.regionId];
+  STATE.map = L.map('map', {
+    zoomControl: false,
+    attributionControl: true,
+    minZoom: 11,
+    maxZoom: 18,
+  }).setView([region.center[1], region.center[0]], region.zoom);
+
+  L.control.zoom({ zoomInTitle: '放大', zoomOutTitle: '缩小' }).addTo(STATE.map);
+  STATE.map.attributionControl.setPrefix('');
+
+  // 主瓦片：高德地图（国内 CDN，无需 key，速度快）
+  // 如需切换可改为 OpenStreetMap：'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  const tileLayer = L.tileLayer(
+    'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+    {
+      subdomains: ['1', '2', '3', '4'],
+      attribution: '地图 © 高德 · 学区数据 © 各区教育局',
+      maxZoom: 18,
+      crossOrigin: true,
+    }
+  );
+  tileLayer.addTo(STATE.map);
+
+  // 5 秒内未加载到瓦片则显示提示
+  let tileLoaded = false;
+  tileLayer.on('tileload', () => { tileLoaded = true; });
+  setTimeout(() => {
+    if (!tileLoaded) {
+      document.getElementById('map-fallback').style.display = 'block';
+    }
+  }, 5000);
+
+  renderMarkers();
+  renderZones();
+  fitMapToRegion(region);
+}
+
+// ---------- 渲染学校标记点 ----------
+function showHoverPopup(school) {
+  if (!school || !STATE.map) return;
+  clearTimeout(STATE.hoverPopupTimer);
+  STATE.hoverSchool = school.name;
+  if (!STATE.hoverPopup) {
+    STATE.hoverPopup = L.popup({
+      maxWidth: 300,
+      className: 'zone-hover-popup',
+      autoPan: false,
+      closeButton: false,
+      interactive: false,
+      closeOnClick: false,
+      autoClose: false,
+    });
+  }
+  STATE.hoverPopup
+    .setLatLng([school.loc[1], school.loc[0]])
+    .setContent(buildPopupContent(school));
+  if (!STATE.map.hasLayer(STATE.hoverPopup)) {
+    STATE.hoverPopup.openOn(STATE.map);
+  }
+}
+
+function hideHoverPopup(schoolName) {
+  clearTimeout(STATE.hoverPopupTimer);
+  STATE.hoverPopupTimer = setTimeout(() => {
+    if (schoolName && STATE.hoverSchool !== schoolName) return;
+    if (STATE.hoverPopup && STATE.map && STATE.map.hasLayer(STATE.hoverPopup)) {
+      STATE.map.closePopup(STATE.hoverPopup);
+    }
+    STATE.hoverSchool = null;
+  }, 90);
+}
+
+function renderMarkers() {
+  hideHoverPopup();
+  // 清掉旧的
+  STATE.markers.forEach(m => STATE.map.removeLayer(m));
+  STATE.markers.clear();
+
+  const region = REGIONS[STATE.regionId];
+  const schoolsToShow = STATE.typeFilter === 'all'
+    ? region.schools
+    : region.schools.filter(s => s.type === STATE.typeFilter);
+  schoolsToShow.forEach((school, idx) => {
+    const subarea = STATE.regionId === 'gaoxin' ? getGaoxinSubarea(school) : null;
+    const subareaClass = subarea ? ` gaoxin-${subarea.id}` : '';
+    const icon = L.divIcon({
+      className: 'school-marker-wrap',
+      html: `<div class="school-marker${school.type === 'middle' ? ' middle-school' : ''}${subareaClass}" data-school="${escapeAttr(school.name)}">
+               <div class="school-marker-inner">${school.type === 'primary' ? '小' : '初'}</div>
+             </div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 28],
+    });
+    const marker = L.marker([school.loc[1], school.loc[0]], { icon }).addTo(STATE.map);
+    marker.on('click', () => selectSchool(school.name));
+
+    marker.on('mouseover', function() {
+      const zp = STATE.zonePolygons.get(school.name);
+      if (zp && STATE.selectedSchool !== school.name) zp.setStyle({ fillOpacity: 0.22, opacity: 0.68 });
+      showHoverPopup(school);
+    });
+    marker.on('mouseout', function() {
+      const zp = STATE.zonePolygons.get(school.name);
+      if (zp && STATE.selectedSchool !== school.name) zp.setStyle({ fillOpacity: 0.07, opacity: 0.30 });
+      hideHoverPopup(school.name);
+    });
+
+    STATE.markers.set(school.name, marker);
+  });
+}
+
+// ============================================================
+// Voronoi 划片范围 + 区域边界
+// ============================================================
+const DISTRICT_BOUNDS = {
+  jinjiang: { minLng: 104.059, minLat: 30.545, maxLng: 104.173, maxLat: 30.671 },
+  qingyang:  { minLng: 103.938, minLat: 30.640, maxLng: 104.095, maxLat: 30.742 },
+  wuhou:     { minLng: 103.968, minLat: 30.590, maxLng: 104.082, maxLat: 30.662 },
+  gaoxin:    { minLng: 104.018, minLat: 30.528, maxLng: 104.108, maxLat: 30.628 },
+  chenghua:  { minLng: 104.072, minLat: 30.652, maxLng: 104.165, maxLat: 30.718 },
+  longquanyi:{ minLng: 104.140, minLat: 30.464, maxLng: 104.455, maxLat: 30.723 },
+  qingbaijiang:{ minLng: 104.161, minLat: 30.658, maxLng: 104.494, maxLat: 30.913 },
+  xindu:     { minLng: 103.903, minLat: 30.676, maxLng: 104.327, maxLat: 30.965 },
+  wenjiang:  { minLng: 103.688, minLat: 30.614, maxLng: 103.946, maxLat: 30.884 },
+  shuangliu: { minLng: 103.792, minLat: 30.227, maxLng: 104.269, maxLat: 30.667 },
+  pidu:      { minLng: 103.716, minLat: 30.719, maxLng: 104.049, maxLat: 30.960 },
+  jinniu:    { minLng: 103.975, minLat: 30.695, maxLng: 104.075, maxLat: 30.762 },
+  xinjin:    { minLng: 103.720, minLat: 30.340, maxLng: 103.900, maxLat: 30.490 },
+  pujiang:   { minLng: 103.390, minLat: 30.100, maxLng: 103.630, maxLat: 30.280 },
+  dujiangyan:{ minLng: 103.380, minLat: 30.730, maxLng: 104.050, maxLat: 31.360 },
+};
+
+const GAOXIN_SUBAREAS = [
+  {
+    id: 'south',
+    name: '高新南区',
+    color: '#2563eb',
+    bounds: { minLng: 104.018, minLat: 30.500, maxLng: 104.112, maxLat: 30.642 },
+    center: [30.575, 104.065],
+  },
+  {
+    id: 'west',
+    name: '高新西区',
+    color: '#7c3aed',
+    bounds: { minLng: 103.890, minLat: 30.700, maxLng: 103.995, maxLat: 30.820 },
+    center: [30.760, 103.945],
+  },
+];
+
+function getGaoxinSubarea(school) {
+  if (!school || school.district !== '高新区') return null;
+  const subareas = REGIONS.gaoxin?.subareas || GAOXIN_SUBAREAS;
+  const areaId = school.zone && school.zone.includes('【西区】') ? 'west' : 'south';
+  return subareas.find(area => area.id === areaId) || null;
+}
+
+function getSubdistrictChip(school) {
+  const area = getGaoxinSubarea(school);
+  if (!area) return '';
+  const westClass = area.id === 'west' ? ' west' : '';
+  return `<span class="subdistrict-chip${westClass}">${escapeHtml(area.name)}</span>`;
+}
+
+// ============================================================
+// 学校评级 & 公私立（仅供参考，非官方权威认定）
+// ============================================================
+const SCHOOL_RATINGS = {
+  // 锦江区 ★★★★★
+  '成都市天涯石小学': 5, '成都市盐道街小学': 5, '成都师范附属小学': 5,
+  '成都市七中育才附属小学锦官驿校区': 5, '成都市七中育才附属小学东湖校区': 5,
+  '成都市七中育才附属小学银杏校区': 5,
+  // 锦江区 ★★★★
+  '成都市天涯石小学昭忠祠分校': 4, '成都市盐道街小学（东区）': 4,
+  '成都师范附属小学万科分校': 4, '成都市盐道街小学得胜分校': 4,
+  '成都市锦江区外国语小学': 4, '成都市锦江区教育科学研究院附属小学': 4,
+  '成都市盐道街小学锦馨分校': 4, '成都师范附属小学白鹭溪分校': 4,
+  '成都师范附属小学三圣分校': 4, '成都市锦江实验学校': 4,
+  '成都师范附属小学华润分校': 4, '成都市盐道街小学卓锦分校': 4,
+  '成都市天涯石小学逸景分校': 4, '成都市盐道街小学528校区': 4,
+  '成都师范附属小学慧源校区': 4, '成都市盐道街小学通桂校区': 4,
+  '成都市东光实验小学': 4,
+  // 锦江区 初中 ★★★★★
+  '成都市七中育才学校（水井坊校区）': 5, '四川师范大学附属中学': 5,
+  // 锦江区 初中 ★★★★
+  '成都市盐道街中学': 4, '四川师大附中书院分校': 4,
+  '成都市田家炳中学': 4, '成都市七中育才学校（汇源校区）': 4,
+  '四川师大附中外国语学校': 4, '成都市七中育才学校华兴分校': 4,
+  '四川师范大学附属中学锦华分校': 4, '成都市七中育才学校（东湖校区）': 4,
+  '四川师大附中成龙分校': 4, '四川省成都市盐道街中学（南区）': 4,
+  '成都市七中育才学校（银杏校区）': 4, '成都市七中育才学校（金融城校区）': 4,
+  // 青羊区 ★★★★★
+  '成都市草堂小学': 5, '成都市泡桐树小学': 5, '成都市实验小学': 5,
+  '西南财经大学附属小学': 5, '成都市金沙小学': 5,
+  // 青羊区 ★★★★
+  '成都市青羊实验中学附属小学': 4, '成都市石室联合中学蜀华分校': 4,
+  '成都市文翁实验小学': 4, '成都市石室联合成飞学校': 4,
+  '成都市东城根街小学': 4, '成都市鼓楼小学': 4,
+  '成都市实验小学明道分校': 4, '成都市浣花小学校': 4,
+  '成都市回民小学': 4, '成都市泡桐树小学绿舟分校': 4,
+  '成都市双眼井小学': 4, '成都市彩虹小学': 4,
+  '成都市少城小学': 4, '成都市泡桐树小学境界分校': 4,
+  '成都市胜西小学': 4, '成都市实验小学西区分校': 4,
+  '成都市花园(国际)小学': 4, '成都市实验小学青华分校': 4,
+  '成都市青羊区教育科学研究院附属实验学校': 4, '成都市实验小学战旗分校': 4,
+  '成都市同辉(国际)学校': 4, '成都市胜西小学文兴分校': 4,
+  '成都市新华路小学': 4, '成都市实验小学文苑分校': 4,
+  '成都市泡桐树小学西区分校': 4, '成都市草堂小学西区分校': 4,
+  '成都市花园（国际）小学清波校区': 4, '成都市实验小学蕴雅校区': 4,
+  '成都市实验小学尚雅校区': 4,
+  '成都市草堂小学子美校区': 4,
+  '成都市康河小学': 4,
+  // 青羊区 初中
+  '成都市树德实验中学（东马棚）': 5, '成都市树德实验中学（东区）': 5,
+  '成都市树德实验中学（西区）': 5, '成都市石室联合中学（陕西街）': 5,
+  '成都市石室联合中学（西区）': 5, '成都市石室联合中学（金沙校区）': 5,
+  '成都市石室联合中学蜀华分校（初中部）': 4, '成都市青羊实验中学': 4,
+  '成都市泡桐树中学': 4, '成都市青羊实验中学（光华校区）': 4,
+  '成都市树德实验中学弘毅分校': 4, '成都市石室联合弘文学校': 4,
+  '成都市石室联合成飞学校（初中部）': 4, '成都市树德实验中学（清波校区）': 4,
+  '成都市泡桐树中学百仁分校': 4, '成都市泡桐树中学同文分校': 4,
+  '成都市第十一中学': 3, '成都市第三十七中学校': 3,
+  '成都市青羊区特殊教育学校（初中部）': 3,
+  // 武侯区 小学/初中
+  '成都市武侯实验小学校': 4, '成都市棕北小学校': 4, '成都市玉林小学校': 4,
+  '棕北中学科院校区': 5, '北二外成都附中': 5, '川大附中（十二中）': 5,
+  '石室双楠实验学校': 4, '棕北中学桐梓林校区': 4, '川大附中西区学校': 4,
+  '石室锦城外国语学校': 4, '川大附中新城分校': 4,
+  '七中墨池初级中学': 4, '石室锦官初级中学': 4,
+  // 高新区 小学/初中（2025 小升初划片）
+  '四川省成都高新区实验小学': 4, '成都玉林中学附属小学': 4, '成都高新区锦城小学': 5,
+  '成都高新区锦晖小学': 5, '成都七中初中附属小学': 5, '四川省成都市石室天府中学附属小学': 5,
+  '成都市第七中学初中学校（天环校区）': 5, '成都市第七中学初中学校（锦城校区）': 5,
+  '成都市石室天府中学（交子校区）': 5, '成都市石室天府中学（锦城湖校区）': 5,
+  '四川省成都市玉林中学（肖家河校区）': 5, '四川省成都市玉林中学（紫荆校区）': 5,
+  '成都高新七初天和学校': 5, '成都市教育科学研究院附属学校(成都市天府实验学校)': 4,
+  '成都高新七初天和学校（初中部）': 5,
+  '成都市天府实验学校北区分校（初中部）': 4,
+  '成都市教育科学研究院附属学校(成都市天府实验学校)（初中部）': 4,
+  '成都蒙彼利埃小学': 4, '成都高新中学天府一街分校': 4,
+  '成都高新中学天府一街分校（初中部）': 4,
+  '四川省成都市中和中学润和分校': 4, '成都高新区银都紫藤初中东区学校': 4,
+  '四川省成都市中和中学润和分校（初中部）': 4,
+  '成都高新区银都紫藤初中东区学校（初中部）': 4,
+  '成都市教育科学研究院附属中学(天府五街校区）': 4,
+  '四川省成都高新实验中学': 4, '成都市中和中学': 4,
+  '成都高新区银都紫藤初中学校': 4, '四川省教科院附属实验中学': 4,
+  '上海师范大学成都海川中学校（暂定名）': 4,
+  '电子科技大学实验中学（天骄校区）': 4, '电子科技大学实验中学（尚丰校区）': 4,
+  '成都高新滨河学校': 3, '成都高新滨河学校（初中部）': 3,
+  '成都高新顺江学校（初中部）': 3, '成都高新新科学校（初中部）': 3,
+  // 成华区 小学/初中/高中
+  '成都市双林小学校': 4, '成都市成华实验小学校': 4,
+  '成都市双林初级中学校': 4, '成都市万年场初级中学校': 3,
+  '成都市成华区青龙初级中学': 3, '成都市成华区跳蹬河初级中学': 3,
+  '成都市第十一中学校': 4, '成都市成华中学校（高中部）': 3, '成都市龙潭中学校（高中部）': 3,
+  // 新津区 初中
+  '四川省新津中学': 5, '成都市新津区外国语实验学校': 4, '成都市新津区实验初级中学': 4,
+  '成都市新津区五津初级中学': 4,
+  // 蒲江县 初中
+  '成都七中蒲江学校': 5, '鹤山初中': 4, '文靖学校（初中部）': 4, '寿安初中': 3,
+  // 金牛区 小学/初中/高中
+  '成都市抚琴小学校': 4, '成都市金牛区实验小学校': 4,
+  '成都市金牛区实验初级中学': 4, '成都市营门口初级中学': 3,
+  '成都市天回初级中学': 3, '成都市抚琴初级中学': 3,
+  '成都石室中学北校区': 5, '成都市第十中学校': 4, '成都市金牛高级中学校': 3,
+};
+
+// 目前划片公示学校均为公立；如有民办学校可加入此 Set
+const SCHOOL_IS_PRIVATE = new Set([
+  '成都金苹果公学',
+]);
+
+function getSchoolRating(name) { return SCHOOL_RATINGS[name] ?? 3; }
+function isSchoolPublic(name)  { return !SCHOOL_IS_PRIVATE.has(name); }
+function renderStars(n) {
+  return `<span class="stars-full">${'★'.repeat(n)}</span>` +
+         `<span class="stars-empty">${'☆'.repeat(5 - n)}</span>`;
+}
+
+function buildPopupContent(school) {
+  const rating   = getSchoolRating(school.name);
+  const pub      = isSchoolPublic(school.name);
+  const group = getSchoolGroup(REGIONS[STATE.regionId], school.name);
+  const groupLabel = group
+    ? `<div style="font-size:11px;font-weight:700;color:${getGroupColor(REGIONS[STATE.regionId], group)};margin:4px 0 2px;">${escapeHtml(group.name)}</div>`
+    : '';
+  const typeLabel = school.type === 'primary' ? '小学' : '初中';
+  return (
+    `<div class="zhp-name">${escapeHtml(school.name)}</div>` +
+    `<div class="zhp-meta">` +
+      `<span class="zhp-type-tag">${typeLabel}</span>` +
+      `<span class="zhp-public-tag${pub ? '' : ' private'}">${pub ? '公立' : '民办'}</span>` +
+      `<span class="zhp-stars">${renderStars(rating)}</span>` +
+    `</div>` +
+    groupLabel +
+    `<div class="zhp-zone">${escapeHtml(school.zone)}</div>`
+  );
+}
+
+function clipByHalfPlane(poly, nx, ny, c) {
+  if (!poly.length) return [];
+  const out = [];
+  for (let i = 0; i < poly.length; i++) {
+    const cur = poly[i], nxt = poly[(i + 1) % poly.length];
+    const vc = nx * cur[0] + ny * cur[1];
+    const vn = nx * nxt[0] + ny * nxt[1];
+    if (vc <= c + 1e-10) out.push(cur);
+    if ((vc <= c) !== (vn <= c)) {
+      const t = (c - vc) / (vn - vc);
+      out.push([cur[0] + t * (nxt[0] - cur[0]), cur[1] + t * (nxt[1] - cur[1])]);
+    }
+  }
+  return out;
+}
+
+function getRegionClipPolygon(region, b) {
+  if (region.boundary && region.boundary.length >= 3) return region.boundary;
+  return [[b.minLng, b.minLat], [b.maxLng, b.minLat],
+          [b.maxLng, b.maxLat], [b.minLng, b.maxLat]];
+}
+
+function getRegionBoundaryPolygons(region, b) {
+  if (region.boundaries && region.boundaries.length) return region.boundaries;
+  if (region.boundary && region.boundary.length >= 3) return [region.boundary];
+  if (!b) return [];
+  return [[[b.minLng, b.minLat], [b.maxLng, b.minLat],
+           [b.maxLng, b.maxLat], [b.minLng, b.maxLat], [b.minLng, b.minLat]]];
+}
+
+function renderSubareaBoundaryLayers(region) {
+  if (STATE.regionId !== 'gaoxin' || !region.subareas) return [];
+  const layers = [];
+  region.subareas.forEach(area => {
+    const color = area.color || (area.id === 'west' ? '#7c3aed' : '#2563eb');
+    (area.boundaryParts || []).forEach(polygon => {
+      layers.push(L.polygon(
+        polygon.map(([lng, lat]) => [lat, lng]),
+        {
+          color,
+          weight: 2,
+          dashArray: area.id === 'west' ? '8 5' : '6 4',
+          fillColor: color,
+          fillOpacity: 0.055,
+          opacity: 0.82,
+          interactive: false,
+        }
+      ));
+    });
+    if (area.center) {
+      layers.push(L.marker(area.center, {
+        icon: L.divIcon({
+          className: 'zone-group-label subarea-label gaoxin-subarea-label',
+          html: `<span class="zone-group-label-inner" style="border-color:${color};color:${color};background:rgba(255,255,255,0.92);">${escapeHtml(area.name)}</span>`,
+          iconSize: [86, 26],
+          iconAnchor: [43, 13],
+        }),
+        interactive: false,
+        zIndexOffset: 350,
+      }));
+    }
+  });
+  return layers;
+}
+
+function getPolygonBounds(polygon) {
+  return polygon.reduce((acc, [lng, lat]) => ({
+    minLng: Math.min(acc.minLng, lng),
+    minLat: Math.min(acc.minLat, lat),
+    maxLng: Math.max(acc.maxLng, lng),
+    maxLat: Math.max(acc.maxLat, lat),
+  }), { minLng: Infinity, minLat: Infinity, maxLng: -Infinity, maxLat: -Infinity });
+}
+
+function isPointInPolygon(point, polygon) {
+  const [x, y] = point;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [xi, yi] = polygon[i];
+    const [xj, yj] = polygon[j];
+    const intersect = ((yi > y) !== (yj > y))
+      && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function getSchoolsInBoundaryPart(region, polygon, index) {
+  if (STATE.regionId === 'gaoxin' && region.boundaries && region.boundaries.length > 1) {
+    const targetId = index === 1 ? 'west' : 'south';
+    return region.schools.filter(s => getGaoxinSubarea(s)?.id === targetId);
+  }
+  if (!region.boundaries || region.boundaries.length <= 1) return region.schools;
+  return region.schools.filter(s => isPointInPolygon(s.loc, polygon));
+}
+
+function fitMapToRegion(region, animate = false) {
+  if (!STATE.map) return;
+  const boundaryPolygons = getRegionBoundaryPolygons(region, DISTRICT_BOUNDS[STATE.regionId]);
+  if (boundaryPolygons.length) {
+    STATE.map.fitBounds(
+      L.latLngBounds(boundaryPolygons.flat().map(([lng, lat]) => [lat, lng])),
+      {
+        animate,
+        duration: 0.6,
+        paddingTopLeft: [310, 78],
+        paddingBottomRight: [28, 28],
+      }
+    );
+    return;
+  }
+  STATE.map.setView([region.center[1], region.center[0]], region.zoom, { animate });
+}
+
+function computeVoronoiCells(schools, b, clipPolygon) {
+  return schools.map((si, i) => {
+    let cell = clipPolygon.slice();
+    const ax = si.loc[0], ay = si.loc[1];
+    for (let j = 0; j < schools.length; j++) {
+      if (j === i || !cell.length) continue;
+      const bx = schools[j].loc[0], by = schools[j].loc[1];
+      cell = clipByHalfPlane(cell, bx - ax, by - ay,
+        (bx * bx + by * by - ax * ax - ay * ay) / 2);
+    }
+    return { school: si, polygon: cell };
+  });
+}
+
+const GROUP_COLOR_PALETTE = [
+  '#dc2626', '#ea580c', '#2563eb', '#0891b2', '#7c3aed', '#16a34a',
+  '#be123c', '#ca8a04', '#0f766e', '#4f46e5', '#c026d3', '#15803d',
+  '#b45309', '#0369a1', '#9333ea', '#047857', '#e11d48', '#475569'
+];
+
+function getGroupColor(region, group) {
+  if (!region.groups || !group) return '#b45309';
+  const index = region.groups.findIndex(g => g.id === group.id);
+  return GROUP_COLOR_PALETTE[Math.max(index, 0) % GROUP_COLOR_PALETTE.length];
+}
+
+function getSchoolGroup(region, schoolName) {
+  if (!region.groups) return null;
+  return region.groups.find(g =>
+    g.primaries.includes(schoolName) || g.middles.includes(schoolName)
+  ) || null;
+}
+
+function getZoneColor(region, school) {
+  const group = getSchoolGroup(region, school.name);
+  if (group) return getGroupColor(region, group);
+  return school.type === 'middle' ? '#10b981' : '#3b82f6';
+}
+
+function getGroupCenter(region, group) {
+  const schools = group.primaries
+    .map(name => region.schools.find(s => s.name === name))
+    .filter(Boolean);
+  if (!schools.length) return null;
+
+  const sum = schools.reduce((acc, s) => {
+    acc.lng += s.loc[0];
+    acc.lat += s.loc[1];
+    return acc;
+  }, { lng: 0, lat: 0 });
+
+  return [sum.lat / schools.length, sum.lng / schools.length];
+}
+
+function renderGroupLabels(region) {
+  if (!region.groups) return [];
+
+  return region.groups
+    .map(group => {
+      const center = getGroupCenter(region, group);
+      if (!center) return null;
+      const color = getGroupColor(region, group);
+      const icon = L.divIcon({
+        className: 'zone-group-label',
+        html: `<span class="zone-group-label-inner" style="border-color:${color};color:${color};">${escapeHtml(group.name)}</span>`,
+        iconSize: [72, 26],
+        iconAnchor: [36, 13],
+      });
+      return L.marker(center, { icon, interactive: false, zIndexOffset: 300 });
+    })
+    .filter(Boolean);
+}
+
+function renderZones() {
+  if (STATE.voronoiLayer) STATE.map.removeLayer(STATE.voronoiLayer);
+  if (STATE.groupLabelLayer) STATE.map.removeLayer(STATE.groupLabelLayer);
+  if (STATE.districtRect) STATE.map.removeLayer(STATE.districtRect);
+  STATE.zonePolygons.clear();
+
+  const region = REGIONS[STATE.regionId];
+  const b = DISTRICT_BOUNDS[STATE.regionId];
+  if (!b) return;
+  const boundaryPolygons = getRegionBoundaryPolygons(region, b);
+
+  const districtLayers = boundaryPolygons.map((polygon, index) => {
+    const subarea = STATE.regionId === 'gaoxin' && region.subareas ? region.subareas[index] : null;
+    const color = subarea?.color || '#b91c1c';
+    return L.polygon(
+      polygon.map(([lng, lat]) => [lat, lng]),
+      { color, weight: 3, dashArray: '7 5', fillColor: color, fillOpacity: subarea ? 0.035 : 0.04, opacity: 0.72, interactive: false }
+    );
+  });
+  STATE.districtRect = L.layerGroup([
+    ...districtLayers,
+    ...renderSubareaBoundaryLayers(region),
+  ]).addTo(STATE.map);
+
+  const cells = boundaryPolygons.flatMap((polygon, index) => {
+    const clipBounds = getPolygonBounds(polygon);
+    const partSchools = getSchoolsInBoundaryPart(region, polygon, index);
+    return computeVoronoiCells(partSchools.length ? partSchools : region.schools, clipBounds, polygon);
+  });
+  const layers = [];
+
+  cells.forEach(({ school, polygon }) => {
+    if (polygon.length < 3) return;
+    const latLngs = polygon.map(([lng, lat]) => [lat, lng]);
+    const color = getZoneColor(region, school);
+
+    const poly = L.polygon(latLngs, {
+      color, fillColor: color,
+      fillOpacity: 0.07, weight: 1, opacity: 0.30,
+    });
+
+    poly.on('mouseover', function() {
+      if (STATE.selectedSchool !== school.name) poly.setStyle({ fillOpacity: 0.22, opacity: 0.68 });
+      showHoverPopup(school);
+    });
+    poly.on('mouseout', function() {
+      if (STATE.selectedSchool !== school.name) poly.setStyle({ fillOpacity: 0.07, opacity: 0.30 });
+      hideHoverPopup(school.name);
+    });
+    poly.on('click', function() { selectSchool(school.name, false); });
+
+    STATE.zonePolygons.set(school.name, poly);
+    layers.push(poly);
+  });
+
+  STATE.voronoiLayer = L.layerGroup(layers).addTo(STATE.map);
+  STATE.groupLabelLayer = L.layerGroup(renderGroupLabels(region)).addTo(STATE.map);
+  STATE.markers.forEach(m => m.setZIndexOffset(500));
+}
+
+// ---------- 渲染学校列表 ----------
+function renderSchoolList() {
+  const region = REGIONS[STATE.regionId];
+  const filtered = region.schools.filter(s => {
+    if (STATE.typeFilter !== 'all' && s.type !== STATE.typeFilter) return false;
+    if (!STATE.searchKeyword) return true;
+    const kw = STATE.searchKeyword.toLowerCase();
+    const subarea = getGaoxinSubarea(s);
+    return s.name.toLowerCase().includes(kw)
+        || s.zone.toLowerCase().includes(kw)
+        || (subarea && subarea.name.toLowerCase().includes(kw));
+  });
+  const typeTotal = STATE.typeFilter === 'all'
+    ? region.schools.length
+    : region.schools.filter(s => s.type === STATE.typeFilter).length;
+
+  document.getElementById('school-count').textContent =
+    STATE.searchKeyword
+      ? `${filtered.length}/${typeTotal}`
+      : `共 ${typeTotal} 所`;
+
+  const list = document.getElementById('school-list');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-list">没有匹配的学校</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(s => `
+    <div class="school-item ${s.type === 'middle' ? 'middle-type' : ''} ${s.name === STATE.selectedSchool ? 'active' : ''}"
+         data-name="${escapeAttr(s.name)}">
+      <span class="school-item-icon"></span>
+      <span class="school-item-main">
+        <span>${escapeHtml(s.name)}</span>
+        ${getSubdistrictChip(s)}
+      </span>
+    </div>
+  `).join('');
+  list.querySelectorAll('.school-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const name = el.dataset.name;
+      selectSchool(name, true);
+    });
+  });
+}
+
+// ---------- 片区绑定辅助函数 ----------
+function getSchoolGroups(schoolName, regionId) {
+  const region = REGIONS[regionId];
+  if (!region.groups) return [];
+  return region.groups.filter(g =>
+    g.primaries.includes(schoolName) || g.middles.includes(schoolName)
+  );
+}
+
+function getLinkedSchools(schoolName, regionId) {
+  const school = REGIONS[regionId].schools.find(s => s.name === schoolName);
+  if (!school) return [];
+  const linked = new Set();
+  getSchoolGroups(schoolName, regionId).forEach(g => {
+    (school.type === 'primary' ? g.middles : g.primaries).forEach(n => linked.add(n));
+  });
+  return [...linked];
+}
+
+// ---------- 选中某所学校 ----------
+function selectSchool(name, flyTo = false) {
+  // 取消上一个选中的区域高亮
+  if (STATE.selectedSchool && STATE.zonePolygons.has(STATE.selectedSchool)) {
+    STATE.zonePolygons.get(STATE.selectedSchool).setStyle({ fillOpacity: 0.07, opacity: 0.30, weight: 1 });
+  }
+  STATE.selectedSchool = name;
+  const region = REGIONS[STATE.regionId];
+  const school = region.schools.find(s => s.name === name);
+  if (!school) return;
+
+  // 高亮选中区域
+  const zp = STATE.zonePolygons.get(name);
+  if (zp) zp.setStyle({ fillOpacity: 0.28, opacity: 0.75, weight: 2 });
+
+  // 计算联动学校
+  const linkedSchools = getLinkedSchools(name, STATE.regionId);
+
+  // 更新所有标记样式（map 未加载时跳过）
+  if (STATE.map) {
+    STATE.markers.forEach((marker, schoolName) => {
+      const el = marker.getElement();
+      if (!el) return;
+      const dot = el.querySelector('.school-marker');
+      if (dot) {
+        dot.classList.toggle('selected', schoolName === name);
+        dot.classList.toggle('linked', linkedSchools.includes(schoolName));
+      }
+    });
+
+    // 飞行到目标
+    if (flyTo) {
+      STATE.map.flyTo([school.loc[1], school.loc[0]], 16, { duration: 0.6 });
+    }
+  }
+
+  // 显示详情面板
+  showDetail(school);
+
+  // 列表高亮
+  document.querySelectorAll('.school-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.name === name);
+  });
+}
+
+function showDetail(school) {
+  const panel = document.getElementById('detail-panel');
+  document.getElementById('detail-school-name').textContent = school.name;
+  document.getElementById('detail-district').textContent = school.district;
+  const subdistrict = getGaoxinSubarea(school);
+  const subdistrictEl = document.getElementById('detail-subdistrict');
+  if (subdistrict) {
+    subdistrictEl.textContent = subdistrict.name;
+    subdistrictEl.style.display = '';
+  } else {
+    subdistrictEl.textContent = '';
+    subdistrictEl.style.display = 'none';
+  }
+  document.getElementById('detail-type').textContent =
+    school.type === 'primary' ? '小学' : '初中';
+  document.getElementById('detail-public').textContent =
+    isSchoolPublic(school.name) ? '公立' : '民办';
+  document.getElementById('detail-rating').innerHTML =
+    renderStars(getSchoolRating(school.name)) +
+    `<span style="font-size:11px;color:#92400e;margin-left:6px;">${getSchoolRating(school.name)}/5 · 仅供参考</span>`;
+  document.getElementById('detail-zone').textContent = school.zone || '（暂无官方公示数据）';
+
+  // 片区绑定信息
+  const groupSection = document.getElementById('detail-group-section');
+  const groupContent = document.getElementById('detail-group-content');
+  const groups = getSchoolGroups(school.name, STATE.regionId);
+  if (groups.length > 0) {
+    const isPrimary = school.type === 'primary';
+    groupContent.innerHTML = groups.map((g, i) => {
+      const linkedList = isPrimary ? g.middles : g.primaries;
+      const chipClass = isPrimary ? 'middle-chip' : 'primary-chip';
+      const label = isPrimary ? '可对口初中' : '对口小学';
+      const modeText = g.type === 'single' ? '单校划片' : (g.type === 'reference' ? '辅助绑定' : '多校电脑随机');
+      return `
+        ${i > 0 ? '<div style="height:8px;"></div>' : ''}
+        <span class="group-badge${g.type === 'single' ? ' single' : ''}">📍 ${escapeHtml(g.name)} · ${modeText}</span>
+        <div style="font-size:11px;color:#6b7280;margin-bottom:5px;">${label}（共 ${linkedList.length} 所）</div>
+        <div class="group-links">
+          ${linkedList.map(n => `<span class="group-link-chip ${chipClass}" data-school="${escapeAttr(n)}">${escapeHtml(n)}</span>`).join('')}
+        </div>`;
+    }).join('');
+    groupContent.querySelectorAll('.group-link-chip').forEach(chip => {
+      chip.addEventListener('click', () => selectSchool(chip.dataset.school, true));
+    });
+    groupSection.style.display = '';
+  } else {
+    groupSection.style.display = 'none';
+  }
+
+  const region = REGIONS[STATE.regionId];
+  document.getElementById('detail-source').innerHTML =
+    `<strong>数据来源</strong>：${escapeHtml(region.source)}<br>` +
+    (region.sourceUrl
+      ? `<a href="${region.sourceUrl}" target="_blank">${region.sourceUrl}</a>`
+      : '');
+
+  panel.classList.remove('hidden');
+}
+
+function hideDetail() {
+  if (STATE.selectedSchool && STATE.zonePolygons.has(STATE.selectedSchool)) {
+    STATE.zonePolygons.get(STATE.selectedSchool).setStyle({ fillOpacity: 0.07, opacity: 0.30, weight: 1 });
+  }
+  document.getElementById('detail-panel').classList.add('hidden');
+  STATE.selectedSchool = null;
+  STATE.markers.forEach((marker) => {
+    const el = marker.getElement();
+    if (!el) return;
+    const dot = el.querySelector('.school-marker');
+    if (dot) { dot.classList.remove('selected'); dot.classList.remove('linked'); }
+  });
+  document.querySelectorAll('.school-item.active').forEach(el => el.classList.remove('active'));
+}
+
+// ---------- 切换区域 ----------
+function switchRegion(id) {
+  if (!REGIONS[id]) return;
+  STATE.regionId = id;
+  STATE.selectedSchool = null;
+  STATE.searchKeyword = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('region-name').textContent = REGIONS[id].name;
+  hideDetail();
+
+  const region = REGIONS[id];
+  if (STATE.map) {
+    renderMarkers();
+    renderZones();
+    fitMapToRegion(region, true);
+  }
+  renderSchoolList();
+
+  if (location.hash !== '#' + id) {
+    history.replaceState(null, '', '#' + id);
+  }
+}
+
+function renderRegionList() {
+  const list = document.getElementById('region-list');
+  list.innerHTML = Object.entries(REGIONS).map(([id, r]) => `
+    <div class="region-item ${id === STATE.regionId ? 'active' : ''}" data-id="${id}">
+      <span>${escapeHtml(r.name)}</span>
+      <span class="region-item-count">${r.schools.length} 所</span>
+    </div>
+  `).join('');
+  list.querySelectorAll('.region-item').forEach(el => {
+    el.addEventListener('click', () => {
+      switchRegion(el.dataset.id);
+      document.getElementById('region-modal').classList.add('hidden');
+    });
+  });
+}
+
+// ---------- 工具函数 ----------
+function showMapFallback(msg) {
+  const fb = document.getElementById('map-fallback');
+  fb.style.display = 'block';
+  fb.innerHTML = msg.replace(/\n/g, '<br>');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+  ));
+}
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/"/g, '&quot;');
+}
+
+// ---------- 启动 ----------
+function init() {
+  const hash = location.hash.replace('#', '');
+  if (REGIONS[hash]) STATE.regionId = hash;
+  document.getElementById('region-name').textContent = REGIONS[STATE.regionId].name;
+
+  // 先渲染列表（不依赖地图库）
+  renderSchoolList();
+
+  // 再尝试初始化地图，若 Leaflet 未加载则降级
+  if (typeof L !== 'undefined') {
+    try {
+      initMap();
+    } catch (e) {
+      console.error('地图初始化失败:', e);
+      showMapFallback('地图初始化失败：' + e.message);
+    }
+  } else {
+    showMapFallback('地图库加载失败。请检查网络后刷新页面。\n左侧学校列表仍可正常使用。');
+  }
+
+  // 顶部按钮
+  document.getElementById('region-btn').addEventListener('click', () => {
+    renderRegionList();
+    document.getElementById('region-modal').classList.remove('hidden');
+  });
+  document.getElementById('region-modal-close').addEventListener('click', () => {
+    document.getElementById('region-modal').classList.add('hidden');
+  });
+  document.getElementById('info-btn').addEventListener('click', () => {
+    document.getElementById('info-modal').classList.remove('hidden');
+  });
+  document.getElementById('info-modal-close').addEventListener('click', () => {
+    document.getElementById('info-modal').classList.add('hidden');
+  });
+  document.getElementById('detail-close').addEventListener('click', hideDetail);
+
+  document.querySelectorAll('.modal-backdrop').forEach(el => {
+    el.addEventListener('click', () => el.parentElement.classList.add('hidden'));
+  });
+
+  // 学校类型筛选
+  document.getElementById('type-filter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.type-btn');
+    if (!btn) return;
+    STATE.typeFilter = btn.dataset.type;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b === btn));
+    if (STATE.selectedSchool) hideDetail();
+    if (STATE.map) { renderMarkers(); renderZones(); }
+    renderSchoolList();
+  });
+
+  // 搜索
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    STATE.searchKeyword = e.target.value.trim();
+    renderSchoolList();
+  });
+
+  // ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+      hideDetail();
+    }
+  });
+
+  // hash 变化
+  window.addEventListener('hashchange', () => {
+    const h = location.hash.replace('#', '');
+    if (REGIONS[h] && h !== STATE.regionId) switchRegion(h);
+  });
+
+  // 首次访问时弹出说明
+  if (!sessionStorage.getItem('cd-schools-seen')) {
+    setTimeout(() => {
+      document.getElementById('info-modal').classList.remove('hidden');
+      sessionStorage.setItem('cd-schools-seen', '1');
+    }, 600);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
