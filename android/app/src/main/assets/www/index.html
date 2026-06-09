@@ -539,15 +539,98 @@
   }
 
   /* ============ 响应式 ============ */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar { width: 300px; max-height: calc(100vh - 92px); }
+    .region-sidebar { width: 270px; max-height: calc(100vh - 92px); }
+    .selection-chip { max-width: min(620px, calc(100vw - 180px)); }
+    .zone-hover-popup .leaflet-popup-content { max-height: 50vh; }
+  }
+
   @media (max-width: 768px) {
-    .sidebar { width: calc(100vw - 24px); max-width: 240px; }
-    .region-sidebar { width: calc(100vw - 24px); max-width: 240px; }
-    .detail-panel {
-      width: calc(100vw - 24px); left: 12px; right: 12px;
-      max-height: 50vh;
+    .topbar {
+      height: 52px; padding: 0 10px;
+      gap: 8px;
     }
-    .brand { font-size: 14px; }
+    .topbar-left { min-width: 0; gap: 6px; }
+    .topbar-right { flex-shrink: 0; gap: 6px; }
+    .brand { font-size: 14px; white-space: nowrap; }
+    .divider { display: none; }
+    .region-btn {
+      max-width: 42vw; padding: 6px 9px;
+      font-size: 12px;
+    }
+    .region-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .icon-btn { width: 32px; height: 32px; border-radius: 7px; }
     .data-badge { display: none; }
+    #map { top: 52px; }
+
+    .panel-toggle {
+      top: 62px; height: 34px; padding: 0 12px;
+      font-size: 13px;
+    }
+    #region-panel-toggle { left: 10px; }
+    #school-panel-toggle { right: 10px; }
+
+    .sidebar,
+    .region-sidebar,
+    .detail-panel {
+      top: auto; left: 10px; right: 10px; bottom: 12px;
+      width: auto; max-width: none;
+      max-height: min(58vh, 520px);
+      border-radius: 12px;
+    }
+    .sidebar.hidden,
+    .region-sidebar.hidden {
+      display: none;
+    }
+    .sidebar-header,
+    .region-sidebar-header { padding: 12px 14px 9px; }
+    .school-item { padding: 10px 14px; font-size: 13px; }
+
+    .selection-chip {
+      top: auto; left: 10px; right: 10px; bottom: 12px;
+      transform: none;
+      max-width: none; min-height: 46px;
+      padding: 6px;
+      justify-content: space-between;
+    }
+    .selection-chip span {
+      max-width: none; flex: 1 1 auto;
+      font-size: 14px;
+    }
+    .selection-chip button {
+      flex: 0 0 auto;
+      height: 36px; padding: 0 12px;
+      font-size: 14px;
+    }
+
+    .leaflet-popup { max-width: calc(100vw - 24px) !important; }
+    .zone-hover-popup .leaflet-popup-content-wrapper { max-width: calc(100vw - 24px); }
+    .zone-hover-popup .leaflet-popup-content {
+      width: min(360px, calc(100vw - 44px)) !important;
+      max-height: min(62vh, 430px);
+    }
+    .zhp-name { font-size: 14px; padding: 11px 12px 6px; }
+    .zhp-meta { padding: 0 12px 9px; }
+    .zhp-body { padding: 9px 12px 11px; }
+    .zhp-info-grid { grid-template-columns: 52px minmax(0, 1fr); }
+    .zhp-linked-chip { max-width: 100%; }
+    .leaflet-control-zoom { margin-top: 44px !important; }
+  }
+
+  @media (max-width: 420px) {
+    .selection-chip {
+      align-items: stretch; flex-direction: column;
+      gap: 7px;
+    }
+    .selection-chip span,
+    .selection-chip button {
+      width: 100%;
+      justify-content: center;
+    }
+    .selection-chip span { justify-content: flex-start; }
+    .zhp-info-grid { grid-template-columns: 1fr; gap: 3px; }
+    .zhp-info-label { margin-top: 2px; }
   }
 </style>
 </head>
