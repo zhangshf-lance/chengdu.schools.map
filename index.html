@@ -115,6 +115,7 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.1);
     z-index: 800; overflow: hidden;
     display: flex; flex-direction: column;
+    transition: transform .18s ease, opacity .18s ease;
   }
   .sidebar-header {
     padding: 14px 16px 10px;
@@ -182,6 +183,11 @@
   .sidebar.hidden {
     display: none;
   }
+  .sidebar.collapsed {
+    transform: translateX(calc(100% + 24px));
+    opacity: 0;
+    pointer-events: none;
+  }
 
   .region-sidebar {
     position: absolute; top: 72px; left: 12px;
@@ -192,9 +198,15 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.1);
     z-index: 820; overflow: hidden;
     display: flex; flex-direction: column;
+    transition: transform .18s ease, opacity .18s ease;
   }
   .region-sidebar.hidden {
     display: none;
+  }
+  .region-sidebar.collapsed {
+    transform: translateX(calc(-100% - 24px));
+    opacity: 0;
+    pointer-events: none;
   }
   .region-sidebar-header {
     padding: 14px 16px 10px;
@@ -214,6 +226,44 @@
   .panel-toggle:hover { background: #f9fafb; }
   #region-panel-toggle { left: 12px; }
   #school-panel-toggle { right: 12px; }
+
+  .selection-chip {
+    position: absolute; top: 72px; left: 50%; transform: translateX(-50%);
+    z-index: 940; display: none; align-items: center; gap: 10px;
+    max-width: min(560px, calc(100vw - 28px)); min-height: 44px; padding: 5px 6px 5px 14px;
+    background: rgba(255,255,255,0.98); border: 1px solid rgba(234,88,12,0.28); border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(124,45,18,0.18);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .selection-chip.active { display: inline-flex; }
+  .selection-chip span {
+    display: inline-flex; align-items: center; gap: 7px;
+    min-width: 0; max-width: min(360px, calc(100vw - 190px));
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    padding: 6px 9px; border-radius: 8px;
+    background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #2563eb;
+    color: #1e40af; font-size: 13px; font-weight: 700;
+  }
+  .selection-chip span::before {
+    content: "当前选中";
+    flex: 0 0 auto;
+    padding: 2px 6px; border-radius: 999px;
+    background: #dbeafe; color: #1d4ed8;
+    font-size: 11px; font-weight: 700;
+  }
+  .selection-chip span.middle {
+    background: #ecfdf5; border-color: #a7f3d0; border-left-color: #059669;
+    color: #065f46;
+  }
+  .selection-chip span.middle::before {
+    background: #d1fae5; color: #047857;
+  }
+  .selection-chip button {
+    height: 34px; padding: 0 14px; border: 1px solid #c2410c; border-radius: 8px;
+    background: #ea580c; color: #fff; font-family: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(234,88,12,0.28);
+  }
+  .selection-chip button:hover { background: #c2410c; }
 
   /* ============ 学校详情面板 ============ */
   .detail-panel {
@@ -371,43 +421,86 @@
 
   /* ============ 划片悬停弹窗 ============ */
   .zone-hover-popup .leaflet-popup-content-wrapper {
-    border-radius: 10px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.20);
     padding: 0; overflow: hidden;
   }
   .zone-hover-popup {
     pointer-events: none;
   }
-  .zone-hover-popup .leaflet-popup-content { margin: 0; max-height: 260px; overflow-y: auto; }
+  .selected-school-popup {
+    pointer-events: auto;
+  }
+  .zone-hover-popup .leaflet-popup-content { margin: 0; max-height: 420px; overflow-y: auto; }
   .zone-hover-popup .leaflet-popup-tip-container { opacity: 0.7; }
   .zhp-name {
-    font-size: 13px; font-weight: 600; color: #7c2d12;
-    padding: 10px 14px 5px; line-height: 1.4;
+    font-size: 15px; font-weight: 700; color: #7c2d12;
+    padding: 12px 14px 6px; line-height: 1.4;
   }
-  .zhp-type {
-    font-size: 11px; color: #92400e;
-    padding: 0 14px 7px;
+  .zhp-header {
+    background: linear-gradient(135deg, #fff7ed, #fef3c7);
     border-bottom: 1px solid #fde68a;
   }
   .zhp-meta {
     display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-    padding: 4px 14px 7px;
-    border-bottom: 1px solid #f0ede4;
+    padding: 0 14px 10px;
   }
-  .zhp-type-tag, .zhp-public-tag {
-    padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 500;
+  .zhp-type-tag, .zhp-public-tag, .zhp-district-tag {
+    padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 600;
   }
   .zhp-type-tag { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .zhp-type-tag.middle { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
   .zhp-public-tag { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
   .zhp-public-tag.private { background: #fdf4ff; color: #7e22ce; border-color: #e9d5ff; }
+  .zhp-district-tag { background: rgba(234,88,12,0.10); color: #9a3412; border: 1px solid rgba(234,88,12,0.18); }
   .zhp-stars { font-size: 14px; letter-spacing: 0.5px; }
   .stars-full { color: #f59e0b; }
   .stars-empty { color: #d1d5db; }
+  .zhp-body { padding: 10px 14px 12px; }
+  .zhp-info-grid {
+    display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 5px 9px;
+    padding: 9px 10px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+    font-size: 12px; line-height: 1.55;
+  }
+  .zhp-info-label { color: #92400e; font-weight: 700; white-space: nowrap; }
+  .zhp-info-value { color: #374151; min-width: 0; word-break: break-word; }
+  .zhp-rating-note { color: #92400e; margin-left: 5px; font-size: 11px; }
+  .zhp-section { margin-top: 10px; }
+  .zhp-section-title {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+    font-size: 11px; font-weight: 700; color: #92400e;
+  }
+  .zhp-section-title::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: #ea580c;
+  }
+  .zhp-group-card {
+    padding: 8px 10px; border-radius: 8px; background: #f8fafc;
+    border: 1px solid #e5e7eb; border-left: 4px solid #f59e0b;
+    font-size: 12px; line-height: 1.55;
+  }
+  .zhp-group-card + .zhp-group-card { margin-top: 7px; }
+  .zhp-group-card.single { border-left-color: #16a34a; background: #f0fdf4; border-color: #bbf7d0; }
+  .zhp-group-card.random { border-left-color: #2563eb; background: #eff6ff; border-color: #bfdbfe; }
+  .zhp-group-title { font-weight: 700; margin-bottom: 5px; }
+  .zhp-linked-label { color: #6b7280; margin-bottom: 5px; }
+  .zhp-chip-list { display: flex; flex-wrap: wrap; gap: 5px; }
+  .zhp-linked-chip {
+    display: inline-flex; align-items: center; min-height: 22px; padding: 2px 7px;
+    border-radius: 6px; font-size: 11px; font-weight: 600; border: 1px solid;
+  }
+  .zhp-linked-chip.middle { background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+  .zhp-linked-chip.primary { background: #eff6ff; border-color: #93c5fd; color: #1e40af; }
   .zhp-zone {
     font-size: 12px; color: #374151; line-height: 1.7;
-    padding: 8px 14px 12px;
+    padding: 9px 10px;
+    background: #fafaf9; border: 1px solid #f0ede4; border-radius: 8px;
     white-space: normal; word-break: break-all;
   }
+  .zhp-source {
+    padding: 8px 10px; background: #f0f9ff; border-left: 3px solid #3b82f6;
+    border-radius: 6px; font-size: 11px; color: #1e40af; line-height: 1.6;
+  }
+  .zhp-source a { color: #1e40af; word-break: break-all; pointer-events: auto; }
   .zone-group-label {
     pointer-events: none;
   }
@@ -503,6 +596,11 @@
       请检查网络后刷新页面。<br>
       学校列表仍可正常使用。
     </div>
+  </div>
+
+  <div id="selection-chip" class="selection-chip">
+    <span id="selection-name"></span>
+    <button id="clear-selection" type="button">返回学校列表</button>
   </div>
 
   <button id="region-panel-toggle" class="panel-toggle" type="button">区域</button>
@@ -656,6 +754,8 @@ const STATE = {
   hoverPopup: null,
   hoverPopupTimer: null,
   hoverSchool: null,
+  selectedPopup: null,
+  selectedPopupSchool: null,
   selectedSchool: null,
   searchKeyword: '',
   typeFilter: 'all'
@@ -704,6 +804,7 @@ function initMap() {
 // ---------- 渲染学校标记点 ----------
 function showHoverPopup(school) {
   if (!school || !STATE.map) return;
+  if (STATE.selectedSchool) return;
   clearTimeout(STATE.hoverPopupTimer);
   STATE.hoverSchool = school.name;
   if (!STATE.hoverPopup) {
@@ -723,6 +824,38 @@ function showHoverPopup(school) {
   if (!STATE.map.hasLayer(STATE.hoverPopup)) {
     STATE.hoverPopup.openOn(STATE.map);
   }
+}
+
+function showSelectedPopup(school) {
+  if (!school || !STATE.map) return;
+  clearTimeout(STATE.hoverPopupTimer);
+  if (STATE.hoverPopup && STATE.map.hasLayer(STATE.hoverPopup)) {
+    STATE.map.closePopup(STATE.hoverPopup);
+  }
+  STATE.hoverSchool = null;
+  if (!STATE.selectedPopup) {
+    STATE.selectedPopup = L.popup({
+      maxWidth: 380,
+      className: 'zone-hover-popup selected-school-popup',
+      autoPan: true,
+      closeButton: true,
+      interactive: true,
+      closeOnClick: false,
+      autoClose: false,
+    });
+  }
+  STATE.selectedPopupSchool = school.name;
+  STATE.selectedPopup
+    .off('remove')
+    .on('remove', () => {
+      if (STATE.selectedPopupSchool && STATE.selectedSchool === STATE.selectedPopupSchool) {
+        hideDetail(false);
+      }
+      STATE.selectedPopupSchool = null;
+    })
+    .setLatLng([school.loc[1], school.loc[0]])
+    .setContent(buildPopupContent(school));
+  STATE.selectedPopup.openOn(STATE.map);
 }
 
 function hideHoverPopup(schoolName) {
@@ -946,20 +1079,59 @@ function renderStars(n) {
 function buildPopupContent(school) {
   const rating   = getSchoolRating(school.name);
   const pub      = isSchoolPublic(school.name);
-  const group = getSchoolGroup(REGIONS[STATE.regionId], school.name);
-  const groupLabel = group
-    ? `<div style="font-size:11px;font-weight:700;color:${getGroupColor(REGIONS[STATE.regionId], group)};margin:4px 0 2px;">${escapeHtml(group.name)}</div>`
-    : '';
+  const region = REGIONS[STATE.regionId];
+  const subdistrict = getGaoxinSubarea(school);
+  const groups = getSchoolGroups(school.name, STATE.regionId);
   const typeLabel = school.type === 'primary' ? '小学' : '初中';
+  const linkedClass = school.type === 'primary' ? 'middle' : 'primary';
+  const groupBlock = groups.length
+    ? `<div class="zhp-section">
+        <div class="zhp-section-title">升学片区绑定</div>
+        ${groups.map(g => {
+          const linkedList = school.type === 'primary' ? g.middles : g.primaries;
+          const label = school.type === 'primary' ? '可对口初中' : '对口小学';
+          const modeText = g.type === 'single' ? '单校划片' : (g.type === 'reference' ? '辅助绑定' : '多校电脑随机');
+          const modeClass = g.type === 'single' ? 'single' : (g.type === 'random' ? 'random' : '');
+          return `<div class="zhp-group-card ${modeClass}">
+            <div class="zhp-group-title" style="color:${getGroupColor(region, g)};">${escapeHtml(g.name)} · ${modeText}</div>
+            <div class="zhp-linked-label">${label}（共 ${linkedList.length} 所）</div>
+            <div class="zhp-chip-list">
+              ${linkedList.map(n => `<span class="zhp-linked-chip ${linkedClass}">${escapeHtml(n)}</span>`).join('') || '<span class="zhp-info-value">暂无</span>'}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`
+    : '';
+  const sourceBlock = region.source
+    ? `<div class="zhp-section">
+        <div class="zhp-section-title">数据来源</div>
+        <div class="zhp-source">
+          <strong>${escapeHtml(region.source)}</strong>
+          ${region.sourceUrl ? `<br><a href="${escapeAttr(region.sourceUrl)}" target="_blank">${escapeHtml(region.sourceUrl)}</a>` : ''}
+        </div>
+      </div>`
+    : '';
   return (
-    `<div class="zhp-name">${escapeHtml(school.name)}</div>` +
-    `<div class="zhp-meta">` +
-      `<span class="zhp-type-tag">${typeLabel}</span>` +
-      `<span class="zhp-public-tag${pub ? '' : ' private'}">${pub ? '公立' : '民办'}</span>` +
-      `<span class="zhp-stars">${renderStars(rating)}</span>` +
+    `<div class="zhp-header">` +
+      `<div class="zhp-name">${escapeHtml(school.name)}</div>` +
+      `<div class="zhp-meta">` +
+        `<span class="zhp-district-tag">${escapeHtml(school.district || region.name || '')}${subdistrict ? ` · ${escapeHtml(subdistrict.name)}` : ''}</span>` +
+        `<span class="zhp-type-tag${school.type === 'middle' ? ' middle' : ''}">${typeLabel}</span>` +
+        `<span class="zhp-public-tag${pub ? '' : ' private'}">${pub ? '公立' : '民办'}</span>` +
+      `</div>` +
     `</div>` +
-    groupLabel +
-    `<div class="zhp-zone">${escapeHtml(school.zone)}</div>`
+    `<div class="zhp-body">` +
+      `<div class="zhp-info-grid">` +
+        `<span class="zhp-info-label">学校类型</span><span class="zhp-info-value">${typeLabel} · ${pub ? '公立' : '民办'}</span>` +
+        `<span class="zhp-info-label">参考评级</span><span class="zhp-info-value"><span class="zhp-stars">${renderStars(rating)}</span><span class="zhp-rating-note">${rating}/5 · 仅供参考</span></span>` +
+      `</div>` +
+      groupBlock +
+      `<div class="zhp-section">` +
+        `<div class="zhp-section-title">官方公示划片范围</div>` +
+        `<div class="zhp-zone">${escapeHtml(school.zone || '（暂无官方公示数据）')}</div>` +
+      `</div>` +
+      sourceBlock +
+    `</div>`
   );
 }
 
@@ -1256,22 +1428,52 @@ function renderSchoolList() {
 
 function hideSchoolSidebar() {
   const sidebar = document.getElementById('school-sidebar');
-  if (sidebar) sidebar.classList.add('hidden');
+  if (sidebar) sidebar.classList.add('collapsed');
 }
 
 function showSchoolSidebar() {
+  if (STATE.selectedSchool) hideDetail();
   const sidebar = document.getElementById('school-sidebar');
-  if (sidebar) sidebar.classList.remove('hidden');
+  if (sidebar) {
+    sidebar.classList.remove('hidden');
+    sidebar.classList.remove('collapsed');
+  }
 }
 
 function hideRegionSidebar() {
   const sidebar = document.getElementById('region-sidebar');
-  if (sidebar) sidebar.classList.add('hidden');
+  if (sidebar) sidebar.classList.add('collapsed');
 }
 
 function showRegionSidebar() {
+  if (STATE.selectedSchool) hideDetail();
   const sidebar = document.getElementById('region-sidebar');
-  if (sidebar) sidebar.classList.remove('hidden');
+  if (sidebar) {
+    sidebar.classList.remove('hidden');
+    sidebar.classList.remove('collapsed');
+  }
+}
+
+function syncPanelVisibility() {
+  const selected = Boolean(STATE.selectedSchool);
+  const schoolSidebar = document.getElementById('school-sidebar');
+  const regionSidebar = document.getElementById('region-sidebar');
+  if (schoolSidebar) {
+    schoolSidebar.classList.remove('hidden');
+    schoolSidebar.classList.toggle('collapsed', selected);
+  }
+  if (regionSidebar) {
+    regionSidebar.classList.remove('hidden');
+    regionSidebar.classList.toggle('collapsed', selected);
+  }
+  const chip = document.getElementById('selection-chip');
+  const name = document.getElementById('selection-name');
+  if (chip) chip.classList.toggle('active', selected);
+  if (name) {
+    const school = selected ? REGIONS[STATE.regionId].schools.find(s => s.name === STATE.selectedSchool) : null;
+    name.textContent = selected ? STATE.selectedSchool : '';
+    name.classList.toggle('middle', school?.type === 'middle');
+  }
 }
 
 // ---------- 片区绑定辅助函数 ----------
@@ -1295,12 +1497,12 @@ function getLinkedSchools(schoolName, regionId) {
 
 // ---------- 选中某所学校 ----------
 function selectSchool(name, flyTo = false) {
-  hideSchoolSidebar();
   // 取消上一个选中的区域高亮
   if (STATE.selectedSchool && STATE.zonePolygons.has(STATE.selectedSchool)) {
     STATE.zonePolygons.get(STATE.selectedSchool).setStyle({ fillOpacity: 0.07, opacity: 0.30, weight: 1 });
   }
   STATE.selectedSchool = name;
+  syncPanelVisibility();
   const region = REGIONS[STATE.regionId];
   const school = region.schools.find(s => s.name === name);
   if (!school) return;
@@ -1330,8 +1532,8 @@ function selectSchool(name, flyTo = false) {
     }
   }
 
-  // 显示详情面板
-  showDetail(school);
+  document.getElementById('detail-panel').classList.add('hidden');
+  showSelectedPopup(school);
 
   // 列表高亮
   document.querySelectorAll('.school-item').forEach(el => {
@@ -1398,12 +1600,17 @@ function showDetail(school) {
   panel.classList.remove('hidden');
 }
 
-function hideDetail() {
+function hideDetail(closePopup = true) {
   if (STATE.selectedSchool && STATE.zonePolygons.has(STATE.selectedSchool)) {
     STATE.zonePolygons.get(STATE.selectedSchool).setStyle({ fillOpacity: 0.07, opacity: 0.30, weight: 1 });
   }
   document.getElementById('detail-panel').classList.add('hidden');
+  if (closePopup && STATE.selectedPopup && STATE.map && STATE.map.hasLayer(STATE.selectedPopup)) {
+    STATE.map.closePopup(STATE.selectedPopup);
+  }
+  STATE.selectedPopupSchool = null;
   STATE.selectedSchool = null;
+  syncPanelVisibility();
   STATE.markers.forEach((marker) => {
     const el = marker.getElement();
     if (!el) return;
@@ -1432,8 +1639,7 @@ function switchRegion(id) {
   renderSchoolList();
   renderRegionList('region-sidebar-list');
   renderRegionList('region-list');
-  hideSchoolSidebar();
-  hideRegionSidebar();
+  syncPanelVisibility();
 
   if (location.hash !== '#' + id) {
     history.replaceState(null, '', '#' + id);
@@ -1519,6 +1725,8 @@ function init() {
     document.getElementById('info-modal').classList.add('hidden');
   });
   document.getElementById('detail-close').addEventListener('click', hideDetail);
+  document.getElementById('clear-selection').addEventListener('click', hideDetail);
+  syncPanelVisibility();
 
   document.querySelectorAll('.modal-backdrop').forEach(el => {
     el.addEventListener('click', () => el.parentElement.classList.add('hidden'));
