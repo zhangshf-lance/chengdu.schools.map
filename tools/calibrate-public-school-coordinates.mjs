@@ -5,6 +5,7 @@ const DATA_FILE = 'data.js';
 const CACHE_FILE = 'public-school-tianditu-coordinate-cache.json';
 const REPORT_FILE = 'public-school-coordinate-calibration-report.json';
 
+const AMAP_KEY = process.env.AMAP_KEY || '';
 const TIANDITU_TK = process.env.TIANDITU_TK || '';
 const BAIDU_AK = process.env.BAIDU_AK || '';
 const TENCENT_KEY = process.env.TENCENT_KEY || '';
@@ -17,7 +18,7 @@ const REGION_BOUNDS = {
   xindu: { minLng: 103.903, minLat: 30.676, maxLng: 104.327, maxLat: 30.965 },
   wenjiang: { minLng: 103.688, minLat: 30.614, maxLng: 103.946, maxLat: 30.884 },
   pidu: { minLng: 103.716, minLat: 30.719, maxLng: 104.049, maxLat: 30.960 },
-  xinjin: { minLng: 103.720, minLat: 30.340, maxLng: 103.900, maxLat: 30.490 },
+  xinjin: { minLng: 103.720, minLat: 30.340, maxLng: 103.910, maxLat: 30.500 },
 };
 
 function loadRegions() {
@@ -47,6 +48,13 @@ function normalizeName(value) {
     .replace(/^四川省/, '')
     .replace(/^成都市/, '')
     .replace(/^成都/, '')
+    .replace(/特殊教育/g, '特教')
+    .replace(/镇中心小学/g, '小学')
+    .replace(/小学学校/g, '小学')
+    .replace(/中学学校/g, '中学')
+    .replace(/小学校/g, '小学')
+    .replace(/中学校/g, '中学')
+    .replace(/初级中学/g, '初中')
     .replace(/学校$/, '学校')
     .replace(/小学学校$/, '小学')
     .replace(/中学学校$/, '中学')
@@ -162,7 +170,47 @@ async function jsonFetch(url) {
   }
 }
 
+async function searchAmap(school) {
+  if (!AMAP_KEY || searchAmap.disabled) return [];
+  const out = [];
+  for (const keyword of queryVariants(school)) {
+    const params = new URLSearchParams({
+      key: AMAP_KEY,
+      keywords: keyword,
+      city: '成都',
+      citylimit: 'true',
+      offset: '10',
+      page: '1',
+      extensions: 'base',
+    });
+    const data = await jsonFetch(`https://restapi.amap.com/v3/place/text?${params}`);
+    if (data.status !== '1') {
+      if (data.info) console.warn(`AMap ${data.infocode || data.status}: ${data.info}`);
+      if (['10001', '10003', '10004', '10009'].includes(String(data.infocode))) searchAmap.disabled = true;
+      await sleep(500);
+      continue;
+    }
+    for (const poi of data.pois || []) {
+      const [lng, lat] = String(poi.location || '').split(',').map(Number);
+      if (!Number.isFinite(lng) || !Number.isFinite(lat)) continue;
+      out.push({
+        provider: 'GaodeAmap',
+        source: 'GaodeAmapPlaceSearch(GCJ-02)',
+        title: poi.name || '',
+        address: Array.isArray(poi.address) ? poi.address.join('') : (poi.address || ''),
+        district: poi.adname || '',
+        category: poi.type || '',
+        loc: [lng, lat],
+        query: keyword,
+      });
+    }
+    await sleep(160);
+  }
+  return out;
+}
+
 async function searchTianditu(school) {
+  if (!TIANDITU_TK) return [];
   const out = [];
   for (const keyword of queryVariants(school)) {
     const post = {
@@ -299,7 +347,8 @@ function scoreCandidate(school, candidate) {
   if (school.type === 'middle' && /中学|初中|学校/.test(text)) score += 14;
   if (school.type === 'primary' && /中学|高中|初中/.test(text) && !/九年|学校/.test(text)) score -= 55;
   if (school.type === 'middle' && /小学/.test(text) && !/九年|学校/.test(text)) score -= 45;
-  if (/幼儿园|大学|学院|培训|驾校|公交|地铁|道路|路口|停车|公司|餐饮|出入口|东门|西门|南门|北门/.test(text)) score -= 65;
+  const negativeText = `${candidate.title} ${candidate.category}`;
+  if (/幼儿园|大学|学院|培训|驾校|公交|地铁|道路|停车|公司|餐饮|出入口|东门|西门|南门|北门|少年宫|教工宿舍|宿舍|文具|店/.test(negativeText)) score -= 65;
   if (distanceKm(school.loc, candidate.loc) > 18) score -= 12;
   return score;
 }
@@ -315,7 +364,8 @@ function isSafeCandidate(school, candidate) {
   const target = compactName(school.name);
   const title = compactName(candidate.title);
   const text = `${candidate.title} ${candidate.address} ${candidate.category}`;
-  if (/宿舍|幼儿园|大学|学院|培训|驾校|公交|地铁|道路|路口|停车|公司|餐饮|出入口|东门|西门|南门|北门/.test(text)) return false;
+  const negativeText = `${candidate.title} ${candidate.category}`;
+  if (/宿舍|幼儿园|大学|学院|培训|驾校|公交|地铁|道路|停车|公司|餐饮|出入口|东门|西门|南门|北门|少年宫|教工宿舍|文具|店/.test(negativeText)) return false;
   if (school.type === 'primary' && !/小学|学校/.test(text)) return false;
   if (school.type === 'middle' && !/中学|初中|学校/.test(text)) return false;
   if (title === target) return true;
@@ -348,6 +398,8 @@ function applyUpdates(updates) {
 
 const regions = loadRegions();
 const cache = loadJson(CACHE_FILE, {});
+const previousReport = loadJson(REPORT_FILE, { review: [] });
+const lowConfidenceKeys = new Set((previousReport.review || []).map(item => `${item.regionId}:${item.type}:${item.name}`));
 const updates = [];
 const review = [];
 const providerCounts = {};
@@ -363,13 +415,18 @@ for (const regionId of TARGET_REGIONS) {
       loc: school.loc,
     };
     const cacheKey = `${item.regionId}:${item.type}:${item.name}`;
+    const hasCache = Object.prototype.hasOwnProperty.call(cache, cacheKey);
+    const shouldRefreshProviders = !hasCache || lowConfidenceKeys.has(cacheKey);
     let candidates = cache[cacheKey];
-    if (!Object.prototype.hasOwnProperty.call(cache, cacheKey)) {
-      candidates = [
-        ...(await searchTianditu(item)),
-        ...(await searchBaidu(item)),
-        ...(await searchTencent(item)),
-      ];
+    if (!Array.isArray(candidates)) candidates = [];
+    const providers = new Set(candidates.map(candidate => candidate.provider));
+    const nextCandidates = [...candidates];
+    if (shouldRefreshProviders && AMAP_KEY && !providers.has('GaodeAmap')) nextCandidates.push(...(await searchAmap(item)));
+    if (shouldRefreshProviders && TIANDITU_TK && !providers.has('Tianditu')) nextCandidates.push(...(await searchTianditu(item)));
+    if (shouldRefreshProviders && BAIDU_AK && !providers.has('Baidu')) nextCandidates.push(...(await searchBaidu(item)));
+    if (shouldRefreshProviders && TENCENT_KEY && !providers.has('Tencent')) nextCandidates.push(...(await searchTencent(item)));
+    if (!hasCache || nextCandidates.length !== candidates.length) {
+      candidates = nextCandidates;
       cache[cacheKey] = candidates;
       saveJson(CACHE_FILE, cache);
     }
