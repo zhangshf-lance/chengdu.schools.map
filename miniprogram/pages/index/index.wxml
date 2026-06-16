@@ -1,0 +1,126 @@
+<view class="page">
+  <map
+    id="schoolMap"
+    class="map"
+    longitude="{{longitude}}"
+    latitude="{{latitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    polygons="{{polygons}}"
+    polyline="{{polylines}}"
+    show-location="false"
+    bindmarkertap="onMarkerTap"
+  />
+
+  <view class="topbar">
+    <picker mode="selector" range="{{regionNames}}" value="{{regionIndex}}" bindchange="onRegionPickerChange">
+      <view class="region-picker">
+        <text class="region-name">{{currentRegion.name}}</text>
+        <text class="region-count">{{currentRegion.schools.length}} 所</text>
+      </view>
+    </picker>
+    <view class="legend">
+      <view class="legend-item"><text class="dot primary"></text><text>小学</text></view>
+      <view class="legend-item"><text class="dot middle"></text><text>初中</text></view>
+    </view>
+  </view>
+
+  <view class="filter-panel">
+    <scroll-view class="region-strip" scroll-x enhanced show-scrollbar="false">
+      <view class="region-chip-row">
+        <button
+          wx:for="{{regions}}"
+          wx:key="id"
+          class="region-chip {{item.id === regionId ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onRegionTap"
+        >{{item.name}}</button>
+      </view>
+    </scroll-view>
+
+    <view class="search-row">
+      <input
+        class="search-input"
+        value="{{searchKeyword}}"
+        placeholder="搜索学校、划片范围"
+        confirm-type="search"
+        bindinput="onSearchInput"
+      />
+      <button class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</button>
+    </view>
+
+    <view class="type-tabs">
+      <button class="type-tab {{typeFilter === 'all' ? 'active all' : ''}}" data-type="all" bindtap="onTypeTap">全部</button>
+      <button class="type-tab {{typeFilter === 'primary' ? 'active primary' : ''}}" data-type="primary" bindtap="onTypeTap">小学</button>
+      <button class="type-tab {{typeFilter === 'middle' ? 'active middle' : ''}}" data-type="middle" bindtap="onTypeTap">初中</button>
+    </view>
+  </view>
+
+  <view class="bottom-sheet">
+    <view class="sheet-head">
+      <view>
+        <view class="sheet-title">学校列表</view>
+        <view class="sheet-subtitle">{{filteredSchools.length}} / {{currentRegion.schools.length}} 所</view>
+      </view>
+      <view class="source-pill">2025 划片数据</view>
+    </view>
+
+    <scroll-view class="school-list" scroll-y enhanced>
+      <view wx:if="{{!filteredSchools.length}}" class="empty">没有匹配的学校</view>
+      <view
+        wx:for="{{filteredSchools}}"
+        wx:key="name"
+        class="school-item {{item.name === selectedSchoolName ? 'active' : ''}}"
+        data-name="{{item.name}}"
+        bindtap="onSchoolTap"
+      >
+        <text class="school-dot {{item.type}}"></text>
+        <view class="school-main">
+          <view class="school-name">{{item.name}}</view>
+          <view class="school-meta">
+            <text>{{item.typeLabel}}</text>
+            <text wx:if="{{item.groupText}}"> · {{item.groupText}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view wx:if="{{selectedSchool}}" class="detail-mask" bindtap="closeDetail">
+    <view class="detail-card" catchtap="noop">
+      <view class="detail-head">
+        <view>
+          <view class="detail-title">{{selectedSchool.name}}</view>
+          <view class="detail-meta">{{selectedSchool.district}} · {{selectedSchool.typeLabel}}</view>
+        </view>
+        <button class="detail-close" bindtap="closeDetail">×</button>
+      </view>
+
+      <view wx:if="{{selectedSchool.groups.length}}" class="linked-section">
+        <view class="section-title">对口信息</view>
+        <view wx:for="{{selectedSchool.groups}}" wx:key="id" class="group-block">
+          <view class="group-name">{{item.name}} · {{item.modeText}}</view>
+          <view class="group-links">
+            <button
+              wx:for="{{item.linked}}"
+              wx:for-item="schoolName"
+              wx:key="*this"
+              class="link-chip"
+              data-name="{{schoolName}}"
+              bindtap="onLinkedSchoolTap"
+            >{{schoolName}}</button>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-title">划片范围</view>
+      <scroll-view class="zone-text" scroll-y>
+        <text>{{selectedSchool.zone}}</text>
+      </scroll-view>
+
+      <view class="source-box">
+        <text>{{currentRegion.source}}</text>
+      </view>
+    </view>
+  </view>
+</view>

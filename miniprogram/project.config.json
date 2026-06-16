@@ -1,0 +1,13 @@
+{
+  "description": "Chengdu schools map WeChat mini program",
+  "appid": "touristappid",
+  "projectname": "chengdu-schools-map-miniprogram",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false
+  }
+}
