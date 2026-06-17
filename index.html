@@ -2,13 +2,14 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>成都学区地图 · 真实划片数据</title>
 <!-- Leaflet 样式：先尝试本地 vendor 目录，加载失败时回退到 CDN -->
 <link rel="stylesheet" href="vendor/leaflet.css"
       onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';" />
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --topbar-height: 64px; --content-gap: 12px; }
   html, body { height: 100%; width: 100%; overflow: hidden;
     font-family: -apple-system, "PingFang SC", "Hiragino Sans GB",
                  "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
@@ -19,7 +20,7 @@
   /* ============ 顶部导航 ============ */
   .topbar {
     position: absolute; top: 0; left: 0; right: 0; z-index: 1000;
-    height: 64px; padding: 8px 16px;
+    min-height: 64px; padding: 8px 16px;
     display: grid; grid-template-columns: minmax(150px, .6fr) minmax(330px, auto) minmax(430px, 1fr);
     align-items: center; gap: 14px;
     background: rgba(255,255,255,0.96);
@@ -97,7 +98,7 @@
 
   /* ============ 地图 ============ */
   #map {
-    position: absolute; top: 64px; left: 0; right: 0; bottom: 0;
+    position: absolute; top: var(--topbar-height); left: 0; right: 0; bottom: 0;
     background: #e8e6df;
   }
 
@@ -145,8 +146,8 @@
 
   /* ============ 侧边栏 ============ */
   .sidebar {
-    position: absolute; top: 76px; right: 12px;
-    width: 340px; max-height: calc(100vh - 100px);
+    position: absolute; top: calc(var(--topbar-height) + var(--content-gap)); right: 12px;
+    width: 340px; max-height: calc(100vh - var(--topbar-height) - 36px);
     background: rgba(255,255,255,0.98);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0,0,0,.04);
@@ -234,8 +235,8 @@
   }
 
   .region-sidebar {
-    position: absolute; top: 76px; left: 12px;
-    width: 240px; max-height: calc(100vh - 100px);
+    position: absolute; top: calc(var(--topbar-height) + var(--content-gap)); left: 12px;
+    width: 240px; max-height: calc(100vh - var(--topbar-height) - 36px);
     background: rgba(255,255,255,0.98);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0,0,0,.04);
@@ -260,7 +261,7 @@
   }
   .region-sidebar-title { font-size: 13px; font-weight: 600; color: #374151; }
   .panel-toggle {
-    position: absolute; top: 76px;
+    position: absolute; top: calc(var(--topbar-height) + var(--content-gap));
     height: 34px; padding: 0 10px;
     background: rgba(255,255,255,0.96);
     border: 1px solid #e5e7eb; border-radius: 8px;
@@ -273,7 +274,7 @@
   #school-panel-toggle { right: 12px; }
 
   .selection-chip {
-    position: absolute; top: 76px; left: 50%; transform: translateX(-50%);
+    position: absolute; top: calc(var(--topbar-height) + var(--content-gap)); left: 50%; transform: translateX(-50%);
     z-index: 940; display: none; align-items: center; gap: 10px;
     max-width: min(560px, calc(100vw - 28px)); min-height: 44px; padding: 5px 6px 5px 14px;
     background: rgba(255,255,255,0.98); border: 1px solid rgba(234,88,12,0.28); border-radius: 10px;
@@ -312,8 +313,8 @@
 
   /* ============ 学校详情面板 ============ */
   .detail-panel {
-    position: absolute; top: 76px; left: 12px;
-    width: 360px; max-height: calc(100vh - 96px);
+    position: absolute; top: calc(var(--topbar-height) + var(--content-gap)); left: 12px;
+    width: 360px; max-height: calc(100vh - var(--topbar-height) - 32px);
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.15);
@@ -431,8 +432,8 @@
   .area-rating-empty { color: #9ca3af; font-size: 11px; }
 
   .summary-panel {
-    position: absolute; right: 16px; top: 76px; z-index: 845;
-    width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 116px); overflow: auto;
+    position: absolute; right: 16px; top: calc(var(--topbar-height) + var(--content-gap)); z-index: 845;
+    width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - var(--topbar-height) - 52px); overflow: auto;
     padding: 12px; border-radius: 10px; background: rgba(255,255,255,.97);
     border: 1px solid rgba(15,23,42,.08); box-shadow: 0 8px 24px rgba(15,23,42,.12);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -661,10 +662,12 @@
   @media (min-width: 769px) and (max-width: 1024px) {
     .topbar { grid-template-columns: minmax(130px, .5fr) minmax(300px, auto) auto; gap: 8px; }
     .brand-subtitle { max-width: 240px; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
     .stat { min-width: 76px; padding: 5px 7px; }
+    .stat.visitor { grid-column: span 1; }
     .stat small { font-size: 10px; }
-    .sidebar { width: 300px; max-height: calc(100vh - 92px); }
-    .region-sidebar { width: 270px; max-height: calc(100vh - 92px); }
+    .sidebar { width: 300px; }
+    .region-sidebar { width: 270px; }
     .summary-panel { width: 360px; }
     .selection-chip { max-width: min(620px, calc(100vw - 180px)); }
     .zone-hover-popup .leaflet-popup-content { max-height: 50vh; }
@@ -672,7 +675,7 @@
 
   @media (max-width: 768px) {
     .topbar {
-      height: 64px; min-height: 64px; padding: 6px 8px;
+      min-height: 64px; padding: 6px 8px;
       display: grid; grid-template-columns: auto minmax(168px, 1fr) auto;
       align-items: center; gap: 6px;
     }
@@ -687,22 +690,21 @@
       width: 100%; height: 34px; padding: 0 6px;
       font-size: 12px; border-width: 1px;
     }
-    .stats { gap: 4px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(42px,1fr)); gap: 4px; }
     .stat { min-width: 42px; height: 34px; padding: 4px 5px; }
     .stat b { font-size: 13px; line-height: 13px; }
-    .stat small { font-size: 9px; line-height: 12px; }
-    .stats .stat:first-child { display: none; }
+    .stat small { font-size: 9px; line-height: 12px; overflow: hidden; text-overflow: ellipsis; }
+    .stats .stat.zone { display: none; }
     .icon-btn { width: 32px; height: 32px; border-radius: 7px; }
     .data-badge { display: none; }
-    #map { top: 64px; }
     .summary-panel {
-      top: 74px; right: 10px; left: 10px; width: auto;
+      right: 10px; left: 10px; width: auto;
       max-height: 30vh; padding: 10px;
     }
     .summary-title span { font-size: 18px; }
 
     .panel-toggle {
-      top: 74px; height: 34px; padding: 0 12px;
+      height: 34px; padding: 0 12px;
       font-size: 13px;
     }
     #region-panel-toggle { left: 10px; }
@@ -762,7 +764,9 @@
     .topbar-left { display: none; }
     .top-controls { grid-column: 1; }
     .topbar-right { grid-column: 2; }
-    .stats .stat.zone { display: none; }
+    .stats { grid-template-columns: repeat(2, minmax(42px,1fr)); }
+    .stats .stat.primary,
+    .stats .stat.middle { display: none; }
     .selection-chip {
       align-items: stretch; flex-direction: column;
       gap: 7px;
@@ -2214,10 +2218,31 @@ function initVisitorCount() {
   window.setTimeout(fallback, 2500);
 }
 
+function initResponsiveLayout() {
+  const topbar = document.querySelector('.topbar');
+  if (!topbar) return;
+  let lastHeight = 0;
+  const sync = () => {
+    const height = Math.ceil(topbar.getBoundingClientRect().height);
+    if (!height || height === lastHeight) return;
+    lastHeight = height;
+    document.documentElement.style.setProperty('--topbar-height', `${height}px`);
+    if (STATE.map) window.requestAnimationFrame(() => STATE.map.invalidateSize());
+  };
+  sync();
+  if (window.ResizeObserver) {
+    new ResizeObserver(sync).observe(topbar);
+  } else {
+    window.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', sync);
+  }
+}
+
 // ---------- 启动 ----------
 function init() {
   const hash = location.hash.replace('#', '');
   if (REGIONS[hash]) STATE.regionId = hash;
+  initResponsiveLayout();
   renderTopRegionSelect();
   syncTypeControls();
   renderSchoolList();
