@@ -807,6 +807,7 @@
         <div class="stat zone"><b id="stat-zone-groups">0</b><small id="stat-zone-note">学区</small></div>
         <div class="stat primary"><b id="stat-primary-schools">0</b><small id="stat-primary-note">小学</small></div>
         <div class="stat middle"><b id="stat-middle-schools">0</b><small id="stat-middle-note">初中</small></div>
+        <div class="stat visitor" title="线上由访问统计服务累计，离线时显示本机访问用户"><b id="busuanzi_value_site_uv">...</b><small>访问用户</small></div>
       </div>
       <span class="data-badge" title="划片描述来自教育局官方公示原文；部分学校点位已按 GCJ-02 坐标源校正">
         ⚠ 划片真实 · 点位校正中
@@ -980,6 +981,7 @@
 </script>
 <script src="data.js"></script>
 <script src="district-boundaries.js"></script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <script>
 // ============================================================
 // 应用主逻辑
@@ -2193,6 +2195,25 @@ function escapeAttr(s) {
   return escapeHtml(s).replace(/"/g, '&quot;');
 }
 
+function initVisitorCount() {
+  const visitorEl = document.getElementById('busuanzi_value_site_uv');
+  if (!visitorEl) return;
+  const fallback = () => {
+    const current = visitorEl.textContent.trim();
+    if (current && current !== '...') return;
+    const key = 'chengdu-schools-map-visitor-id';
+    try {
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+      }
+      visitorEl.textContent = '1';
+    } catch (error) {
+      visitorEl.textContent = '1';
+    }
+  };
+  window.setTimeout(fallback, 2500);
+}
+
 // ---------- 启动 ----------
 function init() {
   const hash = location.hash.replace('#', '');
@@ -2201,6 +2222,7 @@ function init() {
   syncTypeControls();
   renderSchoolList();
   renderRegionList('region-sidebar-list');
+  initVisitorCount();
 
   // 先渲染列表（不依赖地图库）
   renderSchoolList();
