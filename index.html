@@ -1206,7 +1206,49 @@ const DISTRICT_BOUNDS = {
   xinjin:    { minLng: 103.720, minLat: 30.340, maxLng: 103.900, maxLat: 30.490 },
   pujiang:   { minLng: 103.390, minLat: 30.100, maxLng: 103.630, maxLat: 30.280 },
   dujiangyan:{ minLng: 103.380, minLat: 30.730, maxLng: 104.050, maxLat: 31.360 },
+  jintang: { minLng: 104.351, minLat: 30.484, maxLng: 104.893, maxLat: 30.951 },
+  dayi: { minLng: 102.993, minLat: 30.427, maxLng: 103.765, maxLat: 30.814 },
+  pengzhou: { minLng: 103.679, minLat: 30.911, maxLng: 104.170, maxLat: 31.435 },
+  qionglai: { minLng: 103.061, minLat: 30.206, maxLng: 103.768, maxLat: 30.553 },
+  chongzhou: { minLng: 103.120, minLat: 30.499, maxLng: 103.822, maxLat: 30.880 },
+  jianyang: { minLng: 104.192, minLat: 30.090, maxLng: 104.898, maxLat: 30.644 },
 };
+
+function ensureAllChengduRegion() {
+  if (REGIONS.all) return;
+  const entries = Object.entries(REGIONS);
+  const schools = entries.flatMap(([id, region]) =>
+    (region.schools || []).map(school => ({
+      ...school,
+      regionId: id,
+      regionName: region.name,
+    }))
+  );
+  const positionedSchools = schools.filter(s => Array.isArray(s.loc) && Number.isFinite(s.loc[0]) && Number.isFinite(s.loc[1]));
+  const bounds = positionedSchools.reduce((acc, school) => ({
+    minLng: Math.min(acc.minLng, school.loc[0]),
+    minLat: Math.min(acc.minLat, school.loc[1]),
+    maxLng: Math.max(acc.maxLng, school.loc[0]),
+    maxLat: Math.max(acc.maxLat, school.loc[1]),
+  }), { minLng: Infinity, minLat: Infinity, maxLng: -Infinity, maxLat: -Infinity });
+  const hasBounds = Number.isFinite(bounds.minLng) && Number.isFinite(bounds.minLat);
+  REGIONS.all = {
+    name: '全成都',
+    center: hasBounds ? [(bounds.minLng + bounds.maxLng) / 2, (bounds.minLat + bounds.maxLat) / 2] : [104.0668, 30.5728],
+    zoom: 10,
+    source: '已收录区域汇总',
+    sourceUrl: '',
+    schools,
+    groups: [],
+    isAggregate: true,
+  };
+  if (hasBounds) DISTRICT_BOUNDS.all = bounds;
+}
+
+function getRegionEntries() {
+  const entries = Object.entries(REGIONS);
+  return entries.sort(([a], [b]) => (a === 'all' ? -1 : b === 'all' ? 1 : 0));
+}
 
 const GAOXIN_SUBAREAS = [
   {
@@ -1514,7 +1556,8 @@ function getSchoolsInBoundaryPart(region, polygon, index) {
 
 function fitMapToRegion(region, animate = false) {
   if (!STATE.map) return;
-  const boundaryPolygons = getRegionBoundaryPolygons(region, DISTRICT_BOUNDS[STATE.regionId]);
+  const b = DISTRICT_BOUNDS[STATE.regionId];
+  const boundaryPolygons = getRegionBoundaryPolygons(region, b);
   if (boundaryPolygons.length) {
     STATE.map.fitBounds(
       L.latLngBounds(boundaryPolygons.flat().map(([lng, lat]) => [lat, lng])),
@@ -1525,6 +1568,15 @@ function fitMapToRegion(region, animate = false) {
         paddingBottomRight: [28, 28],
       }
     );
+    return;
+  }
+  if (b) {
+    STATE.map.fitBounds([[b.minLat, b.minLng], [b.maxLat, b.maxLng]], {
+      animate,
+      duration: 0.6,
+      paddingTopLeft: [310, 78],
+      paddingBottomRight: [28, 28],
+    });
     return;
   }
   STATE.map.setView([region.center[1], region.center[0]], region.zoom, { animate });
@@ -1611,6 +1663,7 @@ function renderZones() {
   STATE.zonePolygons.clear();
 
   const region = REGIONS[STATE.regionId];
+  if (region?.isAggregate) return;
   const b = DISTRICT_BOUNDS[STATE.regionId];
   if (!b) return;
   const boundaryPolygons = getRegionBoundaryPolygons(region, b);
@@ -1870,7 +1923,7 @@ function schoolGroupModeText(region, schoolName) {
 function renderTopRegionSelect() {
   const select = document.getElementById('region-select');
   if (!select) return;
-  select.innerHTML = Object.entries(REGIONS)
+  select.innerHTML = getRegionEntries()
     .map(([id, r]) => `<option value="${escapeAttr(id)}">${escapeHtml(r.name)}</option>`)
     .join('');
   select.value = STATE.regionId;
@@ -1904,6 +1957,18 @@ function setSearchKeyword(value) {
   hideDetail();
   if (STATE.map) { renderMarkers(); renderZones(); }
   renderSchoolList();
+  focusSearchResult();
+}
+
+function focusSearchResult() {
+  if (!STATE.searchKeyword) return;
+  const schools = getFilteredSchools();
+  if (!schools.length) return;
+  const keyword = STATE.searchKeyword.toLowerCase();
+  const exact = schools.find(s => s.name.toLowerCase() === keyword);
+  const starts = schools.find(s => s.name.toLowerCase().startsWith(keyword));
+  const target = exact || starts || schools[0];
+  if (target) selectSchool(target.name, true);
 }
 
 function clearSummaryFilters() {
@@ -2209,7 +2274,7 @@ function renderRegionList(targetId = 'region-list') {
   if (!list) return;
   const count = document.getElementById('region-sidebar-count');
   if (count) count.textContent = `${Object.keys(REGIONS).length} 个`;
-  list.innerHTML = Object.entries(REGIONS).map(([id, r]) => `
+  list.innerHTML = getRegionEntries().map(([id, r]) => `
     <div class="region-item ${id === STATE.regionId ? 'active' : ''}" data-id="${id}">
       <span>${escapeHtml(r.name)}</span>
       <span class="region-item-count">${r.schools.length} 所</span>
@@ -2281,6 +2346,7 @@ function initResponsiveLayout() {
 
 // ---------- 启动 ----------
 function init() {
+  ensureAllChengduRegion();
   const hash = location.hash.replace('#', '');
   if (REGIONS[hash]) STATE.regionId = hash;
   initResponsiveLayout();
